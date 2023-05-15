@@ -4,13 +4,13 @@
         max-width="184"
     >
         <v-img
-            src="http://localhost:9090/api/v1/buckets/projects.fav/objects/download?preview=true&prefix=TWluZWNyYWZ0LTI4NXgzODAuanBn&version_id=null"
+            :src='this.image'
             width="184px"
             contain
         ></v-img>
 
         <v-card-title>
-            {{ project.title }}
+            {{ project.name }}
         </v-card-title>
 
         <v-card-subtitle>
@@ -26,6 +26,14 @@ export default {
             type: Object,
             required: true
         }
+    },
+    data() {
+        return {
+            image: 'http://127.0.0.1:3890/v1/storage/getCategoryAvatar?key='
+        }
+    },
+    mounted() {
+        this.image += this.project.image
     }
 }
 </script>
