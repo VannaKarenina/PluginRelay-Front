@@ -18,23 +18,8 @@
                 </div>
                 <div class="tw-hidden tw-justify-between tw-items-center tw-w-full lg:tw-flex lg:tw-w-auto lg:tw-order-1" id="mobile-menu-2">
                     <ul class="tw-flex tw-flex-col tw-mt-4 tw-font-medium lg:tw-flex-row lg:tw-space-x-8 lg:tw-mt-0">
-                        <li>
-                            <NuxtLink class="tw-block tw-py-2 tw-pr-4 tw-pl-3 tw-text-white tw-rounded tw-bg-primary-700 lg:tw-bg-transparent lg:tw-text-primary-700 lg:tw-p-0 dark:tw-text-white" aria-current="page" to="https://vk.com">Home</NuxtLink>
-                        </li>
-                        <li>
-                            <a href="#" class="tw-block tw-py-2 tw-pr-4 tw-pl-3 tw-text-gray-700 tw-border-b tw-border-gray-100 hover:tw-bg-gray-50 lg:hover:tw-bg-transparent lg:tw-border-0 lg:hover:tw-text-primary-700 lg:tw-p-0 dark:tw-text-gray-400 lg:dark:hover:tw-text-white dark:hover:tw-bg-gray-700 dark:hover:tw-text-white lg:dark:hover:tw-bg-transparent dark:tw-border-gray-700">Company</a>
-                        </li>
-                        <li>
-                            <a href="#" class="tw-block tw-py-2 tw-pr-4 tw-pl-3 tw-text-gray-700 tw-border-b tw-border-gray-100 hover:tw-bg-gray-50 lg:hover:tw-bg-transparent lg:tw-border-0 lg:hover:tw-text-primary-700 lg:tw-p-0 dark:tw-text-gray-400 lg:dark:hover:tw-text-white dark:hover:tw-bg-gray-700 dark:hover:tw-text-white lg:dark:hover:tw-bg-transparent dark:tw-border-gray-700">Marketplace</a>
-                        </li>
-                        <li>
-                            <a href="#" class="tw-block tw-py-2 tw-pr-4 tw-pl-3 tw-text-gray-700 tw-border-b tw-border-gray-100 hover:tw-bg-gray-50 lg:hover:tw-bg-transparent lg:tw-border-0 lg:hover:tw-text-primary-700 lg:tw-p-0 dark:tw-text-gray-400 lg:dark:hover:tw-text-white dark:hover:tw-bg-gray-700 dark:hover:tw-text-white lg:dark:hover:tw-bg-transparent dark:tw-border-gray-700">Features</a>
-                        </li>
-                        <li>
-                            <a href="#" class="tw-block tw-py-2 tw-pr-4 tw-pl-3 tw-text-gray-700 tw-border-b tw-border-gray-100 hover:tw-bg-gray-50 lg:hover:tw-bg-transparent lg:tw-border-0 lg:hover:tw-text-primary-700 lg:tw-p-0 dark:tw-text-gray-400 lg:dark:hover:tw-text-white dark:hover:tw-bg-gray-700 dark:hover:tw-text-white lg:dark:hover:tw-bg-transparent dark:tw-border-gray-700">Team</a>
-                        </li>
-                        <li>
-                            <a href="#" class="tw-block tw-py-2 tw-pr-4 tw-pl-3 tw-text-gray-700 tw-border-b tw-border-gray-100 hover:tw-bg-gray-50 lg:hover:tw-bg-transparent lg:tw-border-0 lg:hover:tw-text-primary-700 lg:tw-p-0 dark:tw-text-gray-400 lg:dark:hover:tw-text-white dark:hover:tw-bg-gray-700 dark:hover:tw-text-white lg:dark:hover:tw-bg-transparent dark:tw-border-gray-700">Contact</a>
+                        <li v-for="(item, index) in menu">
+                            <NuxtLink class="tw-block tw-py-2 tw-pr-4 tw-pl-3 tw-text-white tw-rounded tw-bg-primary-700 lg:tw-bg-transparent lg:tw-text-primary-700 lg:tw-p-0 dark:tw-text-white" aria-current="page" :to=item.path>{{item.name}}</NuxtLink>
                         </li>
                     </ul>
                 </div>
@@ -51,7 +36,16 @@ export default defineComponent({
     name: "NavigationBar",
     data() {
         return {
-
+            menu: [
+                {
+                    name: "Home",
+                    path: "/"
+                },
+                {
+                    name: "Games",
+                    path: "/games"
+                }
+            ]
         }
     }
 })
