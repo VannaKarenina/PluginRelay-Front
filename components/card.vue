@@ -13,8 +13,8 @@
             {{ project.name }}
         </v-card-title>
 
-        <v-card-subtitle>
-            {{ project.description }}
+        <v-card-subtitle style="margin-bottom: 3vh">
+            Modifications: {{ project.projects.length }}
         </v-card-subtitle>
     </v-card>
 </template>
