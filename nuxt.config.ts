@@ -2,6 +2,7 @@
 import {defineNuxtConfig} from "nuxt/config";
 
 export default defineNuxtConfig({
+    ssr: true,
     css: [
         '~/assets/styles/main.css',
         'vuetify/lib/styles/main.sass'
