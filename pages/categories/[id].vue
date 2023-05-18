@@ -26,8 +26,12 @@ export default defineComponent({
     data() {
         return {
           projectId: this.route.params.id,
-          modal: false
+          modal: false,
+          category: null
         }
+    },
+    async mounted() {
+      this.category = await $fetch(`http://127.0.0.1:3890/v1/category/${this.projectId}`);
     },
     methods: {
 
@@ -37,10 +41,7 @@ export default defineComponent({
 
 <template>
   <div class="tw-h-screen">
-      <button @click="openModal">Open Modal</button>
-      <Modal v-if="showModal" @close="closeModal">
-          kek2222222
-      </Modal>
+
   </div>
 </template>
 
