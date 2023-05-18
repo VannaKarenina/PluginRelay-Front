@@ -4,12 +4,20 @@ import {defineComponent} from 'vue'
 export default defineComponent({
     name: "AllGames",
     async mounted() {
-        this.projects = await $fetch('http://127.0.0.1:3890/v1/category/all');
+        this.categories = await $fetch('http://127.0.0.1:3890/v1/category/all');
     },
     data() {
         return {
-            projects: []
+          categories: []
         }
+    },
+    methods: {
+      async redirect(id: number) {
+        await navigateTo({
+          path: `/categories/${id}`
+        })
+      }
+
     }
 })
 </script>
@@ -22,8 +30,8 @@ export default defineComponent({
         <div class="tw-flex tw-justify-center tw-items-center tw-flex-grow tw-mt-7">
             <div class="tw-flex-col">
                 <div class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-3 md:tw-grid-cols-5 lg:tw-grid-cols-5 tw-gap-4 tw-mt-5">
-                    <div v-for="(project, index) in projects" :key="index">
-                        <card :project="project" />
+                    <div v-for="(category, index) in categories" :key="index">
+                        <card :project="category" @click="redirect(category.id)" />
                     </div>
                 </div>
             </div>

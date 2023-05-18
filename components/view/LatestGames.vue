@@ -8,7 +8,7 @@
             <div class="tw-flex-col">
                 <div class="tw-flex tw-justify-between">
                     <div class="tw-text-white tw-text-xl">Featured Games</div>
-                    <NuxtLink class="tw-text-white tw-bg-violet-800 hover:tw-bg-violet-900 tw-font-medium tw-rounded-lg tw-text-sm tw-px-4 lg:tw-px-5 tw-py-2 lg:tw-py-2.5 tw-mr-2 dark:tw-bg-violet-600 dark:hover:tw-bg-violet-700" to="/games">More ></NuxtLink>
+                    <NuxtLink class="tw-text-white tw-bg-violet-800 hover:tw-bg-violet-900 tw-font-medium tw-rounded-lg tw-text-sm tw-px-4 lg:tw-px-5 tw-py-2 lg:tw-py-2.5 tw-mr-2 dark:tw-bg-violet-600 dark:hover:tw-bg-violet-700" to="/categories">More ></NuxtLink>
                 </div>
                 <div class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-3 md:tw-grid-cols-5 lg:tw-grid-cols-5 tw-gap-4 tw-mt-5">
                     <div v-for="(project, index) in projects.slice(0,5)" :key="index">
