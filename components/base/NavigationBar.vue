@@ -42,8 +42,8 @@ export default defineComponent({
                     path: "/"
                 },
                 {
-                    name: "Games",
-                    path: "/games"
+                    name: "Categories",
+                    path: "/categories"
                 }
             ]
         }
