@@ -2,10 +2,10 @@
 import {defineNuxtConfig} from "nuxt/config";
 
 export default defineNuxtConfig({
-    ssr: true,
     css: [
         '~/assets/styles/main.css',
-        'vuetify/lib/styles/main.sass'
+        'vuetify/lib/styles/main.sass',
+        '@fortawesome/fontawesome-svg-core/styles.css'
     ],
     postcss: {
         plugins: {
@@ -20,5 +20,8 @@ export default defineNuxtConfig({
         define: {
             'process.env.DEBUG': false,
         },
+    },
+    nitro: {
+        compressPublicAssets: true,
     },
 })
