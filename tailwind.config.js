@@ -9,7 +9,12 @@ module.exports = {
     "./app.vue",
   ],
   theme: {
-    extend: {},
+    extend: {
+      width: {
+        '550': '550px',
+        '222': '90px'
+      }
+    },
   },
   plugins: [],
   prefix: 'tw-',
