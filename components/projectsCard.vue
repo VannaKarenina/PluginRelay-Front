@@ -33,14 +33,10 @@ export default defineComponent({
     <div class="tw-flex tw-m-2 tw-flex-col tw-justify-center tw-leading-normal">
       <h5 class="tw-text-xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">{{project.name}}</h5>
       <p class="tw-font-normal tw-text-gray-700 dark:tw-text-gray-400">{{ project.description }}</p>
-      <div class="tw-flex tw-flex-row">
+      <div class="tw-flex tw-flex-row tw-mt-1">
         <div class="tw-flex tw-flex-row tw-items-center tw-text-white tw-align-text-bottom">
           <font-awesome-icon :icon="['fas', 'calendar']" size="lg" />
           <h6 class="tw-ml-1">{{getDate(project.created_at)}}</h6>
-        </div>
-        <div class="tw-flex tw-flex-row tw-items-center tw-text-white tw-align-text-bottom tw-ml-5">
-          <font-awesome-icon :icon="['fas', 'square-pen']" size="lg" />
-          <h6 class="tw-ml-1">{{getDate(project.updated_at)}}</h6>
         </div>
         <div class="tw-flex tw-flex-row tw-items-center tw-text-white tw-align-text-bottom tw-ml-5">
           <font-awesome-icon :icon="['fas', 'file-arrow-down']" size="lg" />

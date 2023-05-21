@@ -8,7 +8,7 @@
                     <span class="tw-self-center tw-text-xl tw-font-semibold tw-whitespace-nowrap dark:tw-text-white">Plugin Relay</span>
                 </a>
                 <div class="tw-flex tw-items-center lg:tw-order-2">
-                    <a href="#" class="tw-text-gray-800 dark:tw-text-white hover:tw-bg-gray-50 tw-font-medium tw-rounded-lg tw-text-sm tw-px-4 lg:tw-px-5 tw-py-2 lg:tw-py-2.5 tw-mr-2 dark:hover:tw-bg-gray-700">Log in</a>
+                    <a href="#" @click="openModal" class="tw-text-gray-800 dark:tw-text-white hover:tw-bg-gray-50 tw-font-medium tw-rounded-lg tw-text-sm tw-px-4 lg:tw-px-5 tw-py-2 lg:tw-py-2.5 tw-mr-2 dark:hover:tw-bg-gray-700">Log in</a>
                     <a href="#" class="tw-text-white tw-bg-violet-800 hover:tw-bg-violet-900 tw-font-medium tw-rounded-lg tw-text-sm tw-px-4 lg:tw-px-5 tw-py-2 lg:tw-py-2.5 tw-mr-2 dark:tw-bg-violet-600 dark:hover:tw-bg-violet-700">Get started</a>
                     <button data-collapse-toggle="mobile-menu-2" type="button" class="tw-inline-flex tw-items-center tw-p-2 tw-ml-1 tw-text-sm tw-text-gray-500 tw-rounded-lg lg:tw-hidden hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-gray-200 dark:tw-text-gray-400 dark:hover:tw-bg-gray-700 dark:focus:tw-ring-gray-600" aria-controls="mobile-menu-2" aria-expanded="false">
                         <span class="tw-sr-only">Open main menu</span>
@@ -25,15 +25,44 @@
                 </div>
             </div>
         </div>
+
+      <Modal v-if="showModal" @close="closeModal">
+        <signin v-if="loginModalState == 1" @close="signUpState"/>
+        <signup v-if="loginModalState ==2" @close="signInState" @verify="verifyModal"/>
+      </Modal>
     </div>
 
 </template>
 
 <script lang="ts">
-import {defineComponent} from "vue";
+import {defineComponent, ref} from "vue";
+import Modal from "~/components/base/Modal.vue";
+import {useRoute} from "#app";
+import Signin from "~/components/login/signin.vue";
+import Signup from "~/components/login/signup.vue";
 
 export default defineComponent({
     name: "NavigationBar",
+  components: {Signup, Signin, Modal},
+    async setup() {
+      const route = useRoute();
+
+      const showModal = ref(false);
+
+      function openModal() {
+        showModal.value = true;
+      }
+      function closeModal() {
+        showModal.value = false;
+      }
+
+      return {
+        route,
+        showModal,
+        openModal,
+        closeModal,
+      };
+    },
     data() {
         return {
             menu: [
@@ -45,8 +74,21 @@ export default defineComponent({
                     name: "Categories",
                     path: "/categories"
                 }
-            ]
+            ],
+            loginModalState: 1,
         }
+    },
+    methods: {
+      signUpState() {
+        this.loginModalState = 2
+      },
+      signInState() {
+        this.loginModalState = 1
+      },
+      verifyModal(e) {
+        console.log(e)
+        this.loginModalState = 3
+      }
     }
 })
 </script>
