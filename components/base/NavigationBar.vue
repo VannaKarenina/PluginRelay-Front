@@ -29,6 +29,7 @@
       <Modal v-if="showModal" @close="closeModal">
         <signin v-if="loginModalState == 1" @close="signUpState"/>
         <signup v-if="loginModalState ==2" @close="signInState" @verify="verifyModal"/>
+        <verify :email="verificationEmail" v-if="loginModalState == 3" @close="signInState"/>
       </Modal>
     </div>
 
@@ -40,10 +41,11 @@ import Modal from "~/components/base/Modal.vue";
 import {useRoute} from "#app";
 import Signin from "~/components/login/signin.vue";
 import Signup from "~/components/login/signup.vue";
+import Verify from "~/components/login/verify.vue";
 
 export default defineComponent({
     name: "NavigationBar",
-  components: {Signup, Signin, Modal},
+  components: {Verify, Signup, Signin, Modal},
     async setup() {
       const route = useRoute();
 
@@ -76,6 +78,7 @@ export default defineComponent({
                 }
             ],
             loginModalState: 1,
+            verificationEmail: ''
         }
     },
     methods: {
@@ -86,7 +89,7 @@ export default defineComponent({
         this.loginModalState = 1
       },
       verifyModal(e) {
-        console.log(e)
+        this.verificationEmail = e;
         this.loginModalState = 3
       }
     }

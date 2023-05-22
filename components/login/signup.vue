@@ -1,9 +1,11 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {password} from "iron-webcrypto";
+import ErrorModal from "~/components/InfoModals/ErrorModal.vue";
 
 export default defineComponent({
   name: "signup",
+  components: {ErrorModal},
   methods: {
     changeToSifnIn() {
       this.$emit('close')
@@ -22,12 +24,11 @@ export default defineComponent({
         body: this.registerPayload
       })
 
-      if (data) {
+      if (data.code != 405) {
         this.$emit('verify', this.registerPayload.email)
-      }
-
-      if (data.code == 405) {
-        console.log(false)
+      } else {
+        this.$refs.err.error = data.message;
+        this.$refs.err.close();
       }
     }
   },
@@ -89,6 +90,7 @@ export default defineComponent({
         </div>
       </div>
     </div>
+    <ErrorModal ref="err"/>
   </div>
 </template>
 
