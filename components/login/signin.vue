@@ -1,11 +1,41 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
-
+import {useAuthStore} from "~/stores/auth";
+import {mapActions, mapState} from "pinia";
 export default defineComponent({
   name: "signin",
+  setup() {
+    const store = useAuthStore();
+    return {store}
+  },
   methods: {
     changeToSignUp() {
       this.$emit('close')
+    },
+    async login() {
+
+      const payload: any = await $fetch('http://127.0.0.1:3890/v1/account/login', {
+        method: 'POST',
+        body: this.loginPayload
+      })
+      try {
+        if (payload.code != 800) {
+          this.store.login(payload.access_token);
+        } else {
+          this.$emit('verify', this.loginPayload.loginOrEmail)
+        }
+      } catch (e) {
+        console.log(e)
+      }
+
+    },
+  },
+  data() {
+    return {
+      loginPayload: {
+        loginOrEmail: '',
+        password: ''
+      }
     }
   }
 })
@@ -23,19 +53,19 @@ export default defineComponent({
           <h1 class="tw-text-xl tw-font-bold tw-leading-tight tw-tracking-tight tw-text-gray-900 md:tw-text-2xl dark:tw-text-white">
             Sign in to your account
           </h1>
-          <form class="tw-space-y-4 md:tw-space-y-6" action="#">
+          <form v-on:submit.prevent="login" class="tw-space-y-4 md:tw-space-y-6" action="#">
             <div>
-              <label for="email" class="tw-block tw-mb-2 tw-text-sm tw-font-medium tw-text-gray-900 dark:tw-text-white">Your email</label>
-              <input type="email" name="email" id="email" class="tw-bg-gray-50 tw-border tw-border-gray-300 tw-text-gray-900 sm:tw-text-sm tw-rounded-lg focus:tw-ring-primary-600 focus:tw-border-primary-600 tw-block tw-w-full tw-p-2.5 dark:tw-bg-gray-700 dark:tw-border-gray-600 dark:tw-placeholder-gray-400 dark:tw-text-white dark:focus:tw-ring-blue-500 dark:focus:tw-border-blue-500" placeholder="name@company.com" required="">
+              <label for="lor" class="tw-block tw-mb-2 tw-text-sm tw-font-medium tw-text-gray-900 dark:tw-text-white">Your email</label>
+              <input v-model="loginPayload.loginOrEmail" type="text" name="lor" id="lor" class="tw-bg-gray-50 tw-border tw-border-gray-300 tw-text-gray-900 sm:tw-text-sm tw-rounded-lg focus:tw-ring-primary-600 focus:tw-border-primary-600 tw-block tw-w-full tw-p-2.5 dark:tw-bg-gray-700 dark:tw-border-gray-600 dark:tw-placeholder-gray-400 dark:tw-text-white dark:focus:tw-ring-blue-500 dark:focus:tw-border-blue-500" placeholder="login or name@company.com" required="">
             </div>
             <div>
               <label for="password" class="tw-block tw-mb-2 tw-text-sm tw-font-medium tw-text-gray-900 dark:tw-text-white">Password</label>
-              <input type="password" name="password" id="password" placeholder="••••••••" class="tw-bg-gray-50 tw-border tw-border-gray-300 tw-text-gray-900 sm:tw-text-sm tw-rounded-lg focus:tw-ring-primary-600 focus:tw-border-primary-600 tw-block tw-w-full tw-p-2.5 dark:tw-bg-gray-700 dark:tw-border-gray-600 dark:tw-placeholder-gray-400 dark:tw-text-white dark:focus:tw-ring-blue-500 dark:focus:tw-border-blue-500" required="">
+              <input v-model="loginPayload.password" type="password" name="password" id="password" placeholder="••••••••" class="tw-bg-gray-50 tw-border tw-border-gray-300 tw-text-gray-900 sm:tw-text-sm tw-rounded-lg focus:tw-ring-primary-600 focus:tw-border-primary-600 tw-block tw-w-full tw-p-2.5 dark:tw-bg-gray-700 dark:tw-border-gray-600 dark:tw-placeholder-gray-400 dark:tw-text-white dark:focus:tw-ring-blue-500 dark:focus:tw-border-blue-500" required="">
             </div>
             <div class="tw-flex tw-items-center tw-justify-between">
               <a href="#" class="tw-text-sm tw-font-medium tw-text-blue-600 hover:tw-underline dark:tw-text-primary-500">Forgot password?</a>
             </div>
-            <button class="tw-w-full tw-text-white tw-bg-violet-800 hover:tw-bg-violet-700 focus:tw-ring-4 focus:tw-outline-none focus:tw-ring-violet-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5 tw-text-center dark:tw-bg-violet-600 dark:hover:tw-bg-violet-700 dark:focus:tw-ring-violet-800">Sign in</button>
+            <button type="submit" class="tw-w-full tw-text-white tw-bg-violet-800 hover:tw-bg-violet-700 focus:tw-ring-4 focus:tw-outline-none focus:tw-ring-violet-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5 tw-text-center dark:tw-bg-violet-600 dark:hover:tw-bg-violet-700 dark:focus:tw-ring-violet-800">Sign in</button>
             <p class="tw-text-sm tw-font-light tw-text-gray-500 dark:tw-text-gray-400">
               Don’t have an account yet? <a href="#" @click="changeToSignUp" class="tw-font-medium tw-text-blue-600 hover:tw-underline dark:tw-text-blue-500">Sign up</a>
             </p>

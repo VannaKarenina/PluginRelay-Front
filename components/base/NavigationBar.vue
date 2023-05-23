@@ -8,7 +8,7 @@
                     <span class="tw-self-center tw-text-xl tw-font-semibold tw-whitespace-nowrap dark:tw-text-white">Plugin Relay</span>
                 </a>
                 <div class="tw-flex tw-items-center lg:tw-order-2">
-                    <a href="#" @click="openModal" class="tw-text-gray-800 dark:tw-text-white hover:tw-bg-gray-50 tw-font-medium tw-rounded-lg tw-text-sm tw-px-4 lg:tw-px-5 tw-py-2 lg:tw-py-2.5 tw-mr-2 dark:hover:tw-bg-gray-700">Log in</a>
+                    <a v-if="!store.isAuthenticated" href="#" @click="openModal" class="tw-text-gray-800 dark:tw-text-white hover:tw-bg-gray-50 tw-font-medium tw-rounded-lg tw-text-sm tw-px-4 lg:tw-px-5 tw-py-2 lg:tw-py-2.5 tw-mr-2 dark:hover:tw-bg-gray-700">Log in</a>
                     <a href="#" class="tw-text-white tw-bg-violet-800 hover:tw-bg-violet-900 tw-font-medium tw-rounded-lg tw-text-sm tw-px-4 lg:tw-px-5 tw-py-2 lg:tw-py-2.5 tw-mr-2 dark:tw-bg-violet-600 dark:hover:tw-bg-violet-700">Get started</a>
                     <button data-collapse-toggle="mobile-menu-2" type="button" class="tw-inline-flex tw-items-center tw-p-2 tw-ml-1 tw-text-sm tw-text-gray-500 tw-rounded-lg lg:tw-hidden hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-gray-200 dark:tw-text-gray-400 dark:hover:tw-bg-gray-700 dark:focus:tw-ring-gray-600" aria-controls="mobile-menu-2" aria-expanded="false">
                         <span class="tw-sr-only">Open main menu</span>
@@ -27,7 +27,7 @@
         </div>
 
       <Modal v-if="showModal" @close="closeModal">
-        <signin v-if="loginModalState == 1" @close="signUpState"/>
+        <signin v-if="loginModalState == 1" @close="signUpState" @verify="verifyModal"/>
         <signup v-if="loginModalState ==2" @close="signInState" @verify="verifyModal"/>
         <verify :email="verificationEmail" v-if="loginModalState == 3" @close="signInState"/>
       </Modal>
@@ -42,12 +42,15 @@ import {useRoute} from "#app";
 import Signin from "~/components/login/signin.vue";
 import Signup from "~/components/login/signup.vue";
 import Verify from "~/components/login/verify.vue";
+import {useAuthStore} from "~/stores/auth";
 
 export default defineComponent({
     name: "NavigationBar",
   components: {Verify, Signup, Signin, Modal},
     async setup() {
       const route = useRoute();
+
+      const store = useAuthStore();
 
       const showModal = ref(false);
 
@@ -63,6 +66,7 @@ export default defineComponent({
         showModal,
         openModal,
         closeModal,
+        store
       };
     },
     data() {

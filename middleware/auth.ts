@@ -1,19 +1,13 @@
-import { useAuthStore } from '@/store/auth'
+import { useAuthStore } from '~/stores/auth';
 
-export default function ({ req, redirect }: { req: any, redirect: any } ) {
-    const authStore = useAuthStore()
+export default defineNuxtRouteMiddleware(async (to: any, from: any) => {
 
-    // Check if the token exists in the cookie or local storage
-    if (process.server) {
-        const token = req.headers.cookie?.split('; ').find((row: any) => row.startsWith('token='))
-        if (token) {
-            const parsedToken = token.split('=')[1]
-            authStore.setToken(parsedToken)
-        }
+    const store = useAuthStore();
+
+    if(store.isAuthenticated) {
+        return navigateTo(to);
+    } else {
+        return navigateTo('/')
     }
 
-    // If the user is not authenticated, redirect to the login page
-    if (!authStore.isAuthenticated) {
-        return redirect('/')
-    }
-}
+})

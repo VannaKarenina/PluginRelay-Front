@@ -1,8 +1,12 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
+import {useAuthStore} from "~/stores/auth";
 
 export default defineComponent({
     name: "AllGames",
+    setup() {
+      const authStore = useAuthStore();
+    },
     async mounted() {
         this.categories = await $fetch('http://127.0.0.1:3890/v1/category/all');
     },

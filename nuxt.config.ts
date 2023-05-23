@@ -24,4 +24,16 @@ export default defineNuxtConfig({
     nitro: {
         compressPublicAssets: true,
     },
+    modules: [
+        [
+            '@pinia/nuxt',
+            {
+                autoImports: ['defineStore', 'acceptHMRUpdate'],
+            }
+        ],
+        '@pinia-plugin-persistedstate/nuxt',
+    ],
+    imports: {
+        dirs: ['stores'],
+    },
 })
