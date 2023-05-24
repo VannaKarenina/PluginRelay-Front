@@ -6,7 +6,8 @@ export default defineComponent({
   name: "signin",
   setup() {
     const store = useAuthStore();
-    return {store}
+    const route = useRoute();
+    return {store,route}
   },
   methods: {
     changeToSignUp() {
@@ -21,6 +22,10 @@ export default defineComponent({
       try {
         if (payload.code != 800) {
           this.store.login(payload.access_token);
+          if (this.route.path != '/user/dashboard') {
+            this.$emit('redirect')
+            return navigateTo('/user/dashboard')
+          }
         } else {
           this.$emit('verify', this.loginPayload.loginOrEmail)
         }

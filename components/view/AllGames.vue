@@ -27,7 +27,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <div>
+    <div class="tw-mb-3">
         <div class="tw-flex tw-justify-center tw-mt-12">
             <h1 class="tw-text-white tw-text-2xl">Explore thousands of mods for your favorite games</h1>
         </div>

@@ -13,7 +13,7 @@ export default defineComponent({
   <div class="tw-flex tw-min-h-screen tw-flex-col tw-bg-slate-950 sm:tw-bg-slate-950 md:tw-bg-slate-950 lg:tw-bg-slate-950">
       <NavigationBar class="tw-z-50"/>
       <slot/>
-      <FooterBar class="tw-mt-5"/>
+      <FooterBar class=""/>
   </div>
 </template>
 

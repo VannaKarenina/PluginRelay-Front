@@ -8,8 +8,10 @@
                     <span class="tw-self-center tw-text-xl tw-font-semibold tw-whitespace-nowrap dark:tw-text-white">Plugin Relay</span>
                 </a>
                 <div class="tw-flex tw-items-center lg:tw-order-2">
-                    <a v-if="!store.isAuthenticated" href="#" @click="openModal" class="tw-text-gray-800 dark:tw-text-white hover:tw-bg-gray-50 tw-font-medium tw-rounded-lg tw-text-sm tw-px-4 lg:tw-px-5 tw-py-2 lg:tw-py-2.5 tw-mr-2 dark:hover:tw-bg-gray-700">Log in</a>
-                    <a href="#" class="tw-text-white tw-bg-violet-800 hover:tw-bg-violet-900 tw-font-medium tw-rounded-lg tw-text-sm tw-px-4 lg:tw-px-5 tw-py-2 lg:tw-py-2.5 tw-mr-2 dark:tw-bg-violet-600 dark:hover:tw-bg-violet-700">Get started</a>
+                  <a v-if="!store.isAuthenticated" href="#" @click="openModal" class="tw-text-gray-800 dark:tw-text-white hover:tw-bg-gray-50 tw-font-medium tw-rounded-lg tw-text-sm tw-px-4 lg:tw-px-5 tw-py-2 lg:tw-py-2.5 tw-mr-2 dark:hover:tw-bg-gray-700">Log in</a>
+                  <NuxtLink v-else-if="!isPanel" to="/user/dashboard" class="tw-text-gray-800 dark:tw-text-white hover:tw-bg-gray-50 tw-font-medium tw-rounded-lg tw-text-sm tw-px-4 lg:tw-px-5 tw-py-2 lg:tw-py-2.5 tw-mr-2 dark:hover:tw-bg-gray-700">Panel</NuxtLink>
+                  <a v-else href="#" @click="logOut" class="tw-text-gray-800 dark:tw-text-white hover:tw-bg-gray-50 tw-font-medium tw-rounded-lg tw-text-sm tw-px-4 lg:tw-px-5 tw-py-2 lg:tw-py-2.5 tw-mr-2 dark:hover:tw-bg-gray-700">Sign Out</a>
+                  <a v-if="!isPanel" href="#" class="tw-text-white tw-bg-violet-800 hover:tw-bg-violet-900 tw-font-medium tw-rounded-lg tw-text-sm tw-px-4 lg:tw-px-5 tw-py-2 lg:tw-py-2.5 tw-mr-2 dark:tw-bg-violet-600 dark:hover:tw-bg-violet-700">Get started</a>
                     <button data-collapse-toggle="mobile-menu-2" type="button" class="tw-inline-flex tw-items-center tw-p-2 tw-ml-1 tw-text-sm tw-text-gray-500 tw-rounded-lg lg:tw-hidden hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-gray-200 dark:tw-text-gray-400 dark:hover:tw-bg-gray-700 dark:focus:tw-ring-gray-600" aria-controls="mobile-menu-2" aria-expanded="false">
                         <span class="tw-sr-only">Open main menu</span>
                         <svg class="tw-w-6 tw-h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
@@ -27,7 +29,7 @@
         </div>
 
       <Modal v-if="showModal" @close="closeModal">
-        <signin v-if="loginModalState == 1" @close="signUpState" @verify="verifyModal"/>
+        <signin v-if="loginModalState == 1" @close="signUpState" @verify="verifyModal" @redirect="redirect"/>
         <signup v-if="loginModalState ==2" @close="signInState" @verify="verifyModal"/>
         <verify :email="verificationEmail" v-if="loginModalState == 3" @close="signInState"/>
       </Modal>
@@ -86,6 +88,16 @@ export default defineComponent({
         }
     },
     methods: {
+      redirect() {
+        this.closeModal()
+      },
+      logOut() {
+        this.store.logout()
+        navigateTo('/');
+      },
+      isPanel() {
+        return this.route.path != '/user/dashboard';
+      },
       signUpState() {
         this.loginModalState = 2
       },
