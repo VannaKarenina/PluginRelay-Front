@@ -1,24 +1,42 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {useAuthStore} from "~/stores/auth";
+import {$fetch} from "ofetch";
 
-export default defineComponent({
-  name: "SideNav"
+export default defineNuxtComponent({
+  name: "SideNav",
+  setup() {
+    const store = useAuthStore();
+    return {store}
+  },
+  data() {
+    return {
+      accountImage: 'http://127.0.0.1:3890/v1/storage/getAccountImage?key=def.png',
+      account: {} as object
+    }
+  },
+  async mounted() {
+    this.account = $fetch('http://127.0.0.1:3890/v1/account/identity', {
+      headers: {
+        Authorization: `Bearer ${this.store.token}`
+      }
+    });
+  }
 })
 </script>
 
 <template>
   <div
       id="view"
-      class="tw-h-full tw-flex tw-flex-row"
+      class="tw-min-h-screen tw-flex tw-flex-row"
   >
     <div
         id="sidebar"
-        class="tw-bg-slate-700 tw-h-screen md:tw-block tw-shadow-xl tw-px-3 tw-w-30 md:tw-w-60 lg:tw-w-60 tw-overflow-x-hidden tw-transition-transform tw-duration-300 tw-ease-in-out"
+        class="tw-bg-slate-700 tw-min-h-screen md:tw-block tw-shadow-xl tw-px-3 tw-w-30 md:tw-w-60 lg:tw-w-60 tw-overflow-x-hidden tw-transition-transform tw-duration-300 tw-ease-in-out"
     >
       <div class="tw-space-y-6 md:tw-space-y-10 tw-mt-10">
         <div id="profile" class="tw-space-y-3">
           <img
-              src="https://images.unsplash.com/photo-1628157588553-5eeea00af15c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80"
+              :src="accountImage"
               alt="Avatar user"
               class="tw-w-10 md:tw-w-16 tw-rounded-full tw-mx-auto"
           />
