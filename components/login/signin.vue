@@ -2,8 +2,10 @@
 import {defineComponent} from 'vue'
 import {useAuthStore} from "~/stores/auth";
 import {mapActions, mapState} from "pinia";
+import ErrorModal from "~/components/InfoModals/ErrorModal.vue";
 export default defineComponent({
   name: "signin",
+  components: {ErrorModal},
   setup() {
     const store = useAuthStore();
     const route = useRoute();
@@ -19,15 +21,21 @@ export default defineComponent({
         method: 'POST',
         body: this.loginPayload
       })
+
       try {
-        if (payload.code != 800) {
-          this.store.login(payload.access_token);
-          if (this.route.path != '/user/dashboard') {
-            this.$emit('redirect')
-            return navigateTo('/user/dashboard')
-          }
+        if (payload.code == 401) {
+          this.$refs.err.error = 'Authorization failed';
+          this.$refs.err.close();
         } else {
-          this.$emit('verify', this.loginPayload.loginOrEmail)
+          if (payload.code != 800) {
+            this.store.login(payload.access_token);
+            if (this.route.path != '/user/dashboard') {
+              this.$emit('redirect')
+              return navigateTo('/user/dashboard')
+            }
+          } else {
+            this.$emit('verify', this.loginPayload.loginOrEmail)
+          }
         }
       } catch (e) {
         console.log(e)
@@ -78,6 +86,7 @@ export default defineComponent({
         </div>
       </div>
     </div>
+    <ErrorModal ref="err"/>
   </div>
 </template>
 

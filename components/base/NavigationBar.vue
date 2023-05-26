@@ -9,8 +9,8 @@
                 </a>
                 <div class="tw-flex tw-items-center lg:tw-order-2">
                   <a v-if="!store.isAuthenticated" href="#" @click="openModal" class="tw-text-gray-800 dark:tw-text-white hover:tw-bg-gray-50 tw-font-medium tw-rounded-lg tw-text-sm tw-px-4 lg:tw-px-5 tw-py-2 lg:tw-py-2.5 tw-mr-2 dark:hover:tw-bg-gray-700">Log in</a>
-                  <NuxtLink v-else-if="!isPanel" to="/user/dashboard" class="tw-text-gray-800 dark:tw-text-white hover:tw-bg-gray-50 tw-font-medium tw-rounded-lg tw-text-sm tw-px-4 lg:tw-px-5 tw-py-2 lg:tw-py-2.5 tw-mr-2 dark:hover:tw-bg-gray-700">Panel</NuxtLink>
-                  <a v-else href="#" @click="logOut" class="tw-text-gray-800 dark:tw-text-white hover:tw-bg-gray-50 tw-font-medium tw-rounded-lg tw-text-sm tw-px-4 lg:tw-px-5 tw-py-2 lg:tw-py-2.5 tw-mr-2 dark:hover:tw-bg-gray-700">Sign Out</a>
+                  <NuxtLink v-if="store.isAuthenticated" to="/user/dashboard" class="tw-text-gray-800 dark:tw-text-white hover:tw-bg-gray-50 tw-font-medium tw-rounded-lg tw-text-sm tw-px-4 lg:tw-px-5 tw-py-2 lg:tw-py-2.5 tw-mr-2 dark:hover:tw-bg-gray-700">Panel</NuxtLink>
+                  <a v-if="store.isAuthenticated" href="#" @click="logOut" class="tw-text-gray-800 dark:tw-text-white hover:tw-bg-gray-50 tw-font-medium tw-rounded-lg tw-text-sm tw-px-4 lg:tw-px-5 tw-py-2 lg:tw-py-2.5 tw-mr-2 dark:hover:tw-bg-gray-700">Sign Out</a>
                   <a v-if="!store.isAuthenticated" href="#" class="tw-text-white tw-bg-violet-800 hover:tw-bg-violet-900 tw-font-medium tw-rounded-lg tw-text-sm tw-px-4 lg:tw-px-5 tw-py-2 lg:tw-py-2.5 tw-mr-2 dark:tw-bg-violet-600 dark:hover:tw-bg-violet-700">Get started</a>
                     <button data-collapse-toggle="mobile-menu-2" type="button" class="tw-inline-flex tw-items-center tw-p-2 tw-ml-1 tw-text-sm tw-text-gray-500 tw-rounded-lg lg:tw-hidden hover:tw-bg-gray-100 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-gray-200 dark:tw-text-gray-400 dark:hover:tw-bg-gray-700 dark:focus:tw-ring-gray-600" aria-controls="mobile-menu-2" aria-expanded="false">
                         <span class="tw-sr-only">Open main menu</span>

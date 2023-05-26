@@ -1,16 +1,11 @@
 <script lang="ts">
+import {defineComponent} from 'vue'
 import {useAuthStore} from "~/stores/auth";
-import SideNav from "~/components/base/SideNav.vue";
 import {$fetch} from "ofetch";
-import Projects from "~/components/dashboard/Projects.vue";
-export default {
-  components: {SideNav, Projects},
-  async setup() {
-    definePageMeta({
-      middleware: [
-        "auth"
-      ]
-    })
+
+export default defineComponent({
+  name: "Projects",
+  setup() {
     const user = ref({});
     const store = useAuthStore();
     onMounted(async () => {
@@ -30,32 +25,20 @@ export default {
       }
     })
     return {store, user}
-  },
-  data() {
-    return {
-      state: 0
-    }
-  },
-  methods: {
-    changeState(e) {
-      switch (e) {
-        case 0:
-          this.state = 0;
-          break;
-        case 1:
-          this.state = 1;
-          break;
-
-      }
-    }
   }
-}
+})
 </script>
 
 <template>
-  <div class="tw-flex tw-flex-row tw-min-h-screen">
-    <SideNav :account="user" @state="changeState" />
-    <Projects v-if="state == 1" />
+  <div class="tw-min-h-screen tw-ml-10">
+    <div class="tw-flex tw-justify-center">
+      <div class="tw-p-4 tw-grid tw-grid-cols-1 sm:tw-grid-cols-1 md:tw-grid-cols-1 lg:tw-grid-cols-2 tw-gap-4 tw-mt-5">
+        <!-- Loop through projects -->
+        <div v-for="(project, index) in user.projects" :key="index">
+          <projects-card :project="project"/>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
