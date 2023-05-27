@@ -23,7 +23,7 @@ export default defineComponent({
     getDate(stamp: any) {
       return new Date(stamp).toISOString().split('T')[0];
     }
-  }
+  },
 })
 </script>
 
