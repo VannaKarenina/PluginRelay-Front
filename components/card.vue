@@ -1,22 +1,22 @@
 <template>
-    <v-card
-        class="mx-auto"
-        max-width="184"
-    >
-        <v-img
-            :src='this.image'
-            width="184px"
-            contain
-        ></v-img>
+  <v-card
+      class="mx-auto"
+      max-width="184"
+  >
+    <v-img
+        :src='this.image'
+        width="184px"
+        contain
+    ></v-img>
 
-        <v-card-title>
-            {{ project.name }}
-        </v-card-title>
+    <v-card-title>
+      {{ project.name }}
+    </v-card-title>
 
-        <v-card-subtitle style="margin-bottom: 3vh">
-            Modifications: {{ project.projects.length }}
-        </v-card-subtitle>
-    </v-card>
+    <v-card-subtitle style="margin-bottom: 3vh">
+      Modifications: {{ project.projects.length }}
+    </v-card-subtitle>
+  </v-card>
 </template>
 
 <script>
