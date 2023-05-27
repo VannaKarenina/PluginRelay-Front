@@ -40,6 +40,10 @@
           <h5 class="tw-text-xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">Version name: {{selectedVersionObj.name}}</h5>
           <p class="tw-font-normal tw-text-gray-700 dark:tw-text-gray-400">Version description: {{ selectedVersionObj.description }}</p>
           <p class="tw-font-normal tw-text-gray-700 dark:tw-text-gray-400">Version: {{ selectedVersionObj.version }}</p>
+          <p class="tw-font-normal tw-text-gray-700 dark:tw-text-gray-400">File: {{ selectedVersionObj.storage }}</p>
+          <button v-if="selectedVersionObj.storage" @click="download(selectedVersionObj.storage, selectedVersionObj.id)"  class="tw-bg-blue-500 hover:tw-bg-blue-700 tw-text-white tw-font-bold tw-py-2 tw-px-4 tw-rounded">
+            Download
+          </button>
         </div>
       </div>
     </Modal>
@@ -104,6 +108,21 @@ export default defineComponent(
         async modalClose() {
           this.selectedVersion = -1;
           this.closeModal()
+        },
+        async download(key: string, id: number) {
+          const file = await $fetch(`http://127.0.0.1:3890/v1/storage/versionFile?key=${key}&id=${id}`, {
+            responseType: 'blob',
+          })
+
+          const url = URL.createObjectURL(new Blob([file]));
+
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', key);
+          document.body.appendChild(link);
+          link.click();
+
+
         }
       },
       computed: {
