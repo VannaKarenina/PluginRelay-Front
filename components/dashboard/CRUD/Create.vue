@@ -1,6 +1,13 @@
 <script setup lang="ts">
+const store = useAuthStore();
+import {$fetch} from "ofetch";
 
 const categories = await $fetch('http://127.0.0.1:3890/v1/category/all');
+const user = await $fetch('http://127.0.0.1:3890/v1/account/identity', {
+  headers: {
+    Authorization: `Bearer ${store.token}`,
+  }
+})
 
 const payload = ref({
   name: '',
@@ -9,22 +16,54 @@ const payload = ref({
 })
 
 const image = ref({});
-const preview = ref(false)
+let eFile = {};
+const preview = ref(false);
 
 async function imageref(e) {
   let file = e.target.files
+  eFile = file[0];
   if (file && file[0]) {
     let reader = new FileReader
     reader.onload = e => {
-      this.image = e.target.result
+      image.value = e.target.result
     }
     reader.readAsDataURL(file[0])
   }
-  this.preview = true;
+  preview.value = true;
 }
 
 async function create() {
-  console.log(payload.value)
+
+  const project = await $fetch('http://127.0.0.1:3890/v1/project/create', {
+    method: 'POST',
+    body: {
+      accountId: user.id,
+      ...payload.value
+    },
+    headers: {
+      Authorization: `Bearer ${store.token}`
+    }
+  })
+
+  var formData = new FormData()
+  formData.append("id", project);
+  formData.append("file", eFile)
+
+
+  try {
+    const favicon = await $fetch('http://127.0.0.1:3890/v1/storage/uploadProjectFavicon', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${store.token}`
+      }
+    })
+  } catch (e) {
+    console.log(e)
+  }
+
+
+
 }
 </script>
 
