@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-min-h-screen">
+  <div class="tw-min-h-screen tw-p-4">
     <div class="tw-flex tw-justify-center tw-mt-5">
       <h1 class="tw-text-white tw-text-2xl">All modifications in &nbsp;</h1>
       <h1 class="tw-text-violet-700 tw-text-2xl">{{category.name}}</h1>
