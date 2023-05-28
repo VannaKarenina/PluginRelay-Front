@@ -1,7 +1,14 @@
 <script setup lang="ts">
+import ErrorModal from "~/components/InfoModals/ErrorModal.vue";
+
+const success = ref(null);
+const error = ref(null);
+
 const store = useAuthStore();
 import {$fetch} from "ofetch";
+import SuccessModal from "~/components/InfoModals/SuccessModal.vue";
 
+const emit = defineEmits(['updated','created'])
 const categories = await $fetch('http://127.0.0.1:3890/v1/category/all');
 const user = await $fetch('http://127.0.0.1:3890/v1/account/identity', {
   headers: {
@@ -50,20 +57,26 @@ async function create() {
   formData.append("file", eFile)
 
 
-  try {
-    const favicon = await $fetch('http://127.0.0.1:3890/v1/storage/uploadProjectFavicon', {
-      method: 'POST',
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${store.token}`
-      }
-    })
-  } catch (e) {
-    console.log(e)
+  const favicon = await $fetch('http://127.0.0.1:3890/v1/storage/uploadProjectFavicon', {
+    method: 'POST',
+    body: formData,
+    headers: {
+      Authorization: `Bearer ${store.token}`
+    }
+  })
+
+  if (project && favicon) {
+    success.value.error = "Project created";
+    success.value.close();
   }
 
+  emit('updated', 1);
 
+}
 
+function closeSuccessModal() {
+  success.value.close();
+  emit('created');
 }
 </script>
 
@@ -119,6 +132,8 @@ async function create() {
         </button>
       </form>
     </div>
+    <SuccessModal @ok="closeSuccessModal" ref="success"/>
+    <ErrorModal ref="error"/>
   </div>
 </template>
 
