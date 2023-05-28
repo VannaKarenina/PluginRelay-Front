@@ -7,7 +7,7 @@
     <div class="tw-flex tw-justify-center">
       <div v-if="isAmountOfProjects" class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-1 md:tw-grid-cols-1 lg:tw-grid-cols-2 tw-gap-4 tw-mt-5">
         <!-- Loop through projects -->
-        <div v-for="(project, index) in category.projects" :key="index">
+        <div v-for="project in category.projects">
           <projects-card @click="openProjectModal(project.id)" :project="project"/>
         </div>
       </div>
