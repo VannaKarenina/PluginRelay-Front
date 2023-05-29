@@ -2,6 +2,7 @@
 import {defineNuxtConfig} from "nuxt/config";
 
 export default defineNuxtConfig({
+    //TODO: Define global runtime config to make global API var
     css: [
         '~/assets/styles/main.css',
         'vuetify/lib/styles/main.sass',
