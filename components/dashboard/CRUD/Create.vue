@@ -3,23 +3,28 @@ import ErrorModal from "~/components/InfoModals/ErrorModal.vue";
 
 const success = ref(null);
 const error = ref(null);
-
 const store = useAuthStore();
 import {$fetch} from "ofetch";
 import SuccessModal from "~/components/InfoModals/SuccessModal.vue";
 
 const emit = defineEmits(['updated','created'])
 const categories = await $fetch('http://127.0.0.1:3890/v1/category/all');
-const user = await $fetch('http://127.0.0.1:3890/v1/account/identity', {
-  headers: {
-    Authorization: `Bearer ${store.token}`,
-  }
-})
+
+try {
+  const user = await $fetch('http://127.0.0.1:3890/v1/account/identity', {
+    headers: {
+      Authorization: `Bearer ${store.token}`,
+    }
+  })
+} catch (e) {
+  store.logout()
+  navigateTo('/')
+}
 
 const payload = ref({
   name: '',
   description: '',
-  category: 0,
+  category: -1,
 })
 
 const image = ref({});
@@ -88,15 +93,15 @@ function closeSuccessModal() {
         <div class="">
           <div class="sm:tw-col-span-2">
             <label for="name" class="tw-block tw-mb-2 tw-text-sm tw-font-medium tw-text-gray-900 dark:tw-text-white">Name</label>
-            <input v-model="payload.name" type="text" name="name" id="name" class="tw-bg-gray-50 tw-border tw-border-gray-300 tw-text-gray-900 tw-text-sm tw-rounded-lg focus:tw-ring-primary-600 focus:tw-border-primary-600 tw-block tw-w-full tw-p-2.5 dark:tw-bg-gray-700 dark:tw-border-gray-600 dark:tw-placeholder-gray-400 dark:tw-text-white dark:focus:tw-ring-primary-500 dark:focus:tw-border-primary-500" placeholder="Type product name" required="required">
+            <input v-model="payload.name" type="text" name="name" id="name" class="tw-bg-gray-50 tw-border tw-border-gray-300 tw-text-gray-900 tw-text-sm tw-rounded-lg focus:tw-ring-primary-600 focus:tw-border-primary-600 tw-block tw-w-full tw-p-2.5 dark:tw-bg-gray-700 dark:tw-border-gray-600 dark:tw-placeholder-gray-400 dark:tw-text-white dark:focus:tw-ring-primary-500 dark:focus:tw-border-primary-500" placeholder="Name" required="required">
           </div>
           <div class="sm:tw-col-span-2 tw-mt-3">
-            <label for="brand" class="tw-block tw-mb-2 tw-text-sm tw-font-medium tw-text-gray-900 dark:tw-text-white">Description</label>
-            <input v-model="payload.description" type="text" name="brand" id="brand" class="tw-bg-gray-50 tw-border tw-border-gray-300 tw-text-gray-900 tw-text-sm tw-rounded-lg focus:tw-ring-primary-600 focus:tw-border-primary-600 tw-block tw-w-full tw-p-2.5 dark:tw-bg-gray-700 dark:tw-border-gray-600 dark:tw-placeholder-gray-400 dark:tw-text-white dark:focus:tw-ring-primary-500 dark:focus:tw-border-primary-500" placeholder="Product brand" required="required">
+            <label for="desc" class="tw-block tw-mb-2 tw-text-sm tw-font-medium tw-text-gray-900 dark:tw-text-white">Description</label>
+            <input v-model="payload.description" type="text" name="desc" id="desc" class="tw-bg-gray-50 tw-border tw-border-gray-300 tw-text-gray-900 tw-text-sm tw-rounded-lg focus:tw-ring-primary-600 focus:tw-border-primary-600 tw-block tw-w-full tw-p-2.5 dark:tw-bg-gray-700 dark:tw-border-gray-600 dark:tw-placeholder-gray-400 dark:tw-text-white dark:focus:tw-ring-primary-500 dark:focus:tw-border-primary-500" placeholder="Description" required="required">
           </div>
           <div class="tw-mt-3">
-            <label for="brand" class="tw-block tw-mb-2 tw-text-sm tw-font-medium tw-text-gray-900 dark:tw-text-white">Category</label>
-            <select id="countries"
+            <label for="cat" class="tw-block tw-mb-2 tw-text-sm tw-font-medium tw-text-gray-900 dark:tw-text-white">Category</label>
+            <select id="cat" name="cat"
                     class="tw-bg-gray-50 tw-border tw-border-gray-300 tw-text-gray-900 tw-text-sm tw-rounded-lg focus:tw-ring-blue-500 focus:tw-border-blue-500 tw-block tw-w-full tw-p-2.5 dark:tw-bg-gray-700 dark:tw-border-gray-600 dark:tw-placeholder-gray-400 dark:tw-text-white dark:focus:tw-ring-primary-500 dark:focus:tw-border-primary-500"
                     v-model="payload.category"
             >
@@ -109,7 +114,7 @@ function closeSuccessModal() {
             <label for="dropzone-file" class="tw-block tw-mb-2 tw-text-sm tw-font-medium tw-text-gray-900 dark:tw-text-white">Project image</label>
             <div class="tw-flex tw-items-center tw-justify-center tw-w-full">
               <div>
-                <label for="dropzone-file" class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full tw-h-64 tw-border-2 tw-border-gray-300 tw-border-dashed tw-rounded-lg tw-cursor-pointer tw-bg-gray-50 dark:hover:tw-bg-bray-800 dark:tw-bg-gray-700 hover:tw-bg-gray-100 dark:tw-border-gray-600 dark:hover:tw-border-gray-500 dark:hover:tw-bg-gray-600">
+                <label for="dropzone-file" class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-auto tw-h-64 tw-border-2 tw-border-gray-300 tw-border-dashed tw-rounded-lg tw-cursor-pointer tw-bg-gray-50 dark:hover:tw-bg-bray-800 dark:tw-bg-gray-700 hover:tw-bg-gray-100 dark:tw-border-gray-600 dark:hover:tw-border-gray-500 dark:hover:tw-bg-gray-600">
                   <div class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-pt-5 tw-pb-6">
                     <div v-if="preview"
                          class="imagePreviewWrapper tw-rounded-lg"
