@@ -7,6 +7,7 @@ function closeModal() {
   emits('cancel')
 }
 function deleteProject() {
+
   emits('deleted')
 
 }

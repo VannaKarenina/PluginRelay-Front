@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ErrorModal from "~/components/InfoModals/ErrorModal.vue";
 
+let user;
 const success = ref(null);
 const error = ref(null);
 const store = useAuthStore();
@@ -11,7 +12,7 @@ const emit = defineEmits(['updated','created'])
 const categories = await $fetch('http://127.0.0.1:3890/v1/category/all');
 
 try {
-  const user = await $fetch('http://127.0.0.1:3890/v1/account/identity', {
+  user = await $fetch('http://127.0.0.1:3890/v1/account/identity', {
     headers: {
       Authorization: `Bearer ${store.token}`,
     }
@@ -28,12 +29,12 @@ const payload = ref({
 })
 
 const image = ref({});
-let eFile = {};
+let eFile = ref({});
 const preview = ref(false);
 
 async function imageref(e) {
   let file = e.target.files
-  eFile = file[0];
+  eFile.value = file[0];
   if (file && file[0]) {
     let reader = new FileReader
     reader.onload = e => {
@@ -45,7 +46,7 @@ async function imageref(e) {
 }
 
 async function create() {
-
+  let favicon;
   const project = await $fetch('http://127.0.0.1:3890/v1/project/create', {
     method: 'POST',
     body: {
@@ -57,20 +58,22 @@ async function create() {
     }
   })
 
-  var formData = new FormData()
-  formData.append("id", project);
-  formData.append("file", eFile)
+  if (eFile.value.name && eFile.value.name.length > 0) {
+    var formData = new FormData()
+    formData.append("id", project);
+    formData.append("file", eFile.value)
 
 
-  const favicon = await $fetch('http://127.0.0.1:3890/v1/storage/uploadProjectFavicon', {
-    method: 'POST',
-    body: formData,
-    headers: {
-      Authorization: `Bearer ${store.token}`
-    }
-  })
+    favicon = await $fetch('http://127.0.0.1:3890/v1/storage/uploadProjectFavicon', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${store.token}`
+      }
+    })
+  }
 
-  if (project && favicon) {
+  if (project || (project && favicon)) {
     success.value.error = "Project created";
     success.value.close();
   }

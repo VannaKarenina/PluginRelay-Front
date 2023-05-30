@@ -25,6 +25,7 @@ const {data: projects, refresh: refreshProjects} = await useAsyncData(
 )
 const refreshUser = async () => await refreshNuxtData('user');
 const currentProject = ref({});
+const currentProjectId = ref(0);
 const selectedVersion = ref(-1);
 const selectedVersionObj = ref({});
 const creation = ref(false);
@@ -36,22 +37,41 @@ const projectEdition = ref(0);
 const edition = ref(false);
 
 const newVersionModal = ref(false);
+const projectVersionId = ref(0);
+
+const versionDeletion = ref(false);
+const versionDeletionId = ref(0);
+
+const editVersion = ref(false);
+const versionEditId = ref(0);
 
 onMounted(() => {
   refreshUser()
 })
 
-function toggleNewVersionModal() {
+function toggleEditVersion() {
+  editVersion.value = !editVersion.value
+}
+
+function toggleNewVersionModal(id?: number) {
+  if (id) {
+    projectVersionId.value = id;
+  }
   newVersionModal.value = !newVersionModal.value
 }
 
-async function openProjectModal(id: number) {
+async function refetchProject(id: number) {
   currentProject.value = await $fetch(`http://127.0.0.1:3890/v1/project/${id}`);
+}
+
+async function openProjectModal(id: number) {
+  await refetchProject(id);
+  currentProjectId.value = id;
   toggleCardModal();
 }
 function selectedVersionChanged() {
   if (selectedVersion.value > 0) {
-    selectedVersionObj.value = currentProject.value.versions[selectedVersion.value-1]
+    selectedVersionObj.value = currentProject.value.versions.find(obj => obj.id === selectedVersion.value)
   }
 }
 
@@ -71,7 +91,7 @@ function toggleCardModal() {
   cardModal.value = !cardModal.value
 }
 
-async function refreshProjectsBridge(e) {
+async function refreshProjectsBridge() {
   await refreshProjects();
 }
 
@@ -82,8 +102,32 @@ function toggleDeletionModal(id?: number) {
   deletion.value = !deletion.value;
 }
 
+function toggleVersionDeletionModal(id?: number) {
+  if (id) {
+    versionDeletionId.value = id;
+  }
+  versionDeletion.value = !versionDeletion.value
+}
+
+async function deleteVersion() {
+  const deletion = await $fetch('http://127.0.0.1:3890/v1/project/deleteVersion', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${store.token}`,
+    },
+    body: {
+      id: versionDeletionId.value
+    }
+  })
+
+  await refetchProject(currentProjectId.value);
+  selectedVersion.value = -1;
+  toggleVersionDeletionModal();
+
+}
+
 async function deleteProject() {
-  const deletion = $fetch('http://127.0.0.1:3890/v1/project/delete', {
+  const deletion = await $fetch('http://127.0.0.1:3890/v1/project/delete', {
     method: 'POST',
     body: {
       id: projectToDelete.value
@@ -92,9 +136,9 @@ async function deleteProject() {
       Authorization: `Bearer ${store.token}`,
     }
   })
+  await refreshProjectsBridge();
   toggleCardModal();
   toggleDeletionModal();
-  refreshProjects();
 }
 </script>
 
@@ -126,7 +170,7 @@ async function deleteProject() {
                 <button @click="toggleDeletionModal(currentProject.id)" type="button" class="tw-ml-2 focus:tw-outline-none tw-text-white tw-bg-purple-700 hover:tw-bg-purple-800 focus:tw-ring-4 focus:tw-ring-purple-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-3 tw-py-1.5 dark:tw-bg-purple-600 dark:hover:tw-bg-purple-700 dark:focus:tw-ring-purple-900">
                   <h3 class="tw-text-white">Delete</h3>
                 </button>
-                <button @click="toggleNewVersionModal" type="button" class="tw-ml-2 focus:tw-outline-none tw-text-white tw-bg-purple-700 hover:tw-bg-purple-800 focus:tw-ring-4 focus:tw-ring-purple-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-3 tw-py-1.5 dark:tw-bg-purple-600 dark:hover:tw-bg-purple-700 dark:focus:tw-ring-purple-900">
+                <button @click="toggleNewVersionModal(currentProject.id)" type="button" class="tw-ml-2 focus:tw-outline-none tw-text-white tw-bg-purple-700 hover:tw-bg-purple-800 focus:tw-ring-4 focus:tw-ring-purple-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-3 tw-py-1.5 dark:tw-bg-purple-600 dark:hover:tw-bg-purple-700 dark:focus:tw-ring-purple-900">
                   <h3 class="tw-text-white">New version</h3>
                 </button>
               </div>
@@ -152,7 +196,7 @@ async function deleteProject() {
               <button @click="toggleEditionModal(currentProject.id)" type="button" class="focus:tw-outline-none tw-text-white tw-bg-purple-700 hover:tw-bg-purple-800 focus:tw-ring-4 focus:tw-ring-purple-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-3 tw-py-1.5 dark:tw-bg-purple-600 dark:hover:tw-bg-purple-700 dark:focus:tw-ring-purple-900">
                 <h3 class="tw-text-white">Edit</h3>
               </button>
-              <button @click="toggleDeletionModal(currentProject.id)" type="button" class="tw-ml-2 focus:tw-outline-none tw-text-white tw-bg-purple-700 hover:tw-bg-purple-800 focus:tw-ring-4 focus:tw-ring-purple-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-3 tw-py-1.5 dark:tw-bg-purple-600 dark:hover:tw-bg-purple-700 dark:focus:tw-ring-purple-900">
+              <button @click="toggleVersionDeletionModal(selectedVersionObj.id)" type="button" class="tw-ml-2 focus:tw-outline-none tw-text-white tw-bg-purple-700 hover:tw-bg-purple-800 focus:tw-ring-4 focus:tw-ring-purple-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-3 tw-py-1.5 dark:tw-bg-purple-600 dark:hover:tw-bg-purple-700 dark:focus:tw-ring-purple-900">
                 <h3 class="tw-text-white">Delete</h3>
               </button>
             </div>
@@ -165,7 +209,13 @@ async function deleteProject() {
           <DeleteProjectModal @deleted="deleteProject" @cancel="toggleDeletionModal"/>
         </Modal>
         <Modal v-if="newVersionModal" @close="toggleNewVersionModal">
-          <AddVersion/>
+          <AddVersion :project-id="projectVersionId"/>
+        </Modal>
+        <Modal v-if="editVersion" @close="toggleEditVersion">
+
+        </Modal>
+        <Modal v-if="versionDeletion" @close="toggleVersionDeletionModal">
+          <DeleteProjectModal @deleted="deleteVersion" @cancel="toggleVersionDeletionModal"/>
         </Modal>
       </div>
     </Modal>

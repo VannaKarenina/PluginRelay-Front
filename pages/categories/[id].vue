@@ -41,7 +41,7 @@
           <p class="tw-font-normal tw-text-gray-700 dark:tw-text-gray-400">Version description: {{ selectedVersionObj.description }}</p>
           <p class="tw-font-normal tw-text-gray-700 dark:tw-text-gray-400">Version: {{ selectedVersionObj.version }}</p>
           <p class="tw-font-normal tw-text-gray-700 dark:tw-text-gray-400">File: {{ selectedVersionObj.storage }}</p>
-          <button v-if="selectedVersionObj.storage" @click="download(selectedVersionObj.storage, selectedVersionObj.id)"  class="tw-bg-blue-500 hover:tw-bg-blue-700 tw-text-white tw-font-bold tw-py-2 tw-px-4 tw-rounded">
+          <button v-if="selectedVersionObj.storage" @click="download(selectedVersionObj.storage, currentProject.id)"  class="tw-bg-blue-500 hover:tw-bg-blue-700 tw-text-white tw-font-bold tw-py-2 tw-px-4 tw-rounded">
             Download
           </button>
         </div>
@@ -102,7 +102,7 @@ export default defineComponent(
         },
         async selectedVersionChanged() {
           if (this.selectedVersion > 0) {
-            this.selectedVersionObj = this.currentProject.versions[this.selectedVersion-1]
+            this.selectedVersionObj = this.currentProject.versions.find(obj => obj.id === this.selectedVersion)
           }
         },
         async modalClose() {
@@ -110,9 +110,9 @@ export default defineComponent(
           this.closeModal()
         },
         async download(key: string, id: number) {
-          const file = await $fetch(`http://127.0.0.1:3890/v1/storage/versionFile?key=${key}&id=${id}`, {
-            responseType: 'blob',
-          })
+          const file = await $fetch(`http://127.0.0.1:3890/v1/storage/versionFile?key=${key}&id=${id}`)
+
+
 
           const url = URL.createObjectURL(new Blob([file]));
 
@@ -121,8 +121,6 @@ export default defineComponent(
           link.setAttribute('download', key);
           document.body.appendChild(link);
           link.click();
-
-
         }
       },
       computed: {

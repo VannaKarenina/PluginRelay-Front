@@ -2,6 +2,13 @@
 
 import ErrorModal from "~/components/InfoModals/ErrorModal.vue";
 import SuccessModal from "~/components/InfoModals/SuccessModal.vue";
+import {def} from "@vue/shared";
+import {$fetch} from "ofetch";
+
+const store = useAuthStore();
+const props = defineProps([
+    'projectId'
+])
 
 //refs
 const success = ref(null);
@@ -12,9 +19,14 @@ const payload = ref({
 })
 let eFile = ref({});
 
+const extension = {
+  jar: 'application/java-archive'
+}
+
 function fileUpload(e) {
   let file = e.target.files
-  eFile = file[0];
+  eFile.value = file[0];
+  console.log(file)
 }
 function closeSuccessModal() {
   success.value.close()
@@ -22,8 +34,38 @@ function closeSuccessModal() {
 
 async function create() {
 
-  //TODO: Implement creation of new version
-  const newVer = await $fetch('http://127.0.0.1:3890/v1/project/newVer')
+  let plugin;
+
+  const newVer = await $fetch('http://127.0.0.1:3890/v1/project/newVer', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${store.token}`,
+    },
+    body: {
+      id: props.projectId,
+      name: payload.value.name,
+      description: payload.value.description,
+      version: payload.value.version
+    }
+  })
+  if (eFile.value.name && eFile.value.name.length > 0) {
+    var formData = new FormData()
+    formData.append("id", newVer);
+    formData.append("file", eFile.value)
+
+    plugin = await $fetch('http://127.0.0.1:3890/v1/storage/uploadProjectFile', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${store.token}`
+      }
+    })
+
+    if (newVer && plugin) {
+      success.value.error = "Version created";
+      success.value.close();
+    }
+  }
 
 }
 </script>
