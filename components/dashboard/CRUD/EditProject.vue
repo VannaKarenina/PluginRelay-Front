@@ -70,7 +70,7 @@ async function edit() {
   }
 
   if (project && favicon) {
-    success.value.error = "Project created";
+    success.value.error = "Project edited";
     success.value.close();
   }
 

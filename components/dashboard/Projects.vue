@@ -49,7 +49,10 @@ onMounted(() => {
   refreshUser()
 })
 
-function toggleEditVersion() {
+function toggleEditVersion(id?: number) {
+  if (id) {
+    versionEditId.value = id;
+  }
   editVersion.value = !editVersion.value
 }
 
@@ -140,6 +143,17 @@ async function deleteProject() {
   toggleCardModal();
   toggleDeletionModal();
 }
+async function  createdver() {
+  toggleNewVersionModal()
+  toggleCardModal();
+  await refreshProjectsBridge();
+}
+
+async function closeVersionEditor() {
+  toggleEditVersion();
+  toggleCardModal();
+  await refreshProjectsBridge();
+}
 </script>
 
 <template>
@@ -193,7 +207,7 @@ async function deleteProject() {
           <div class="tw-flex tw-flex-row">
             <h5 class="tw-text-xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">Version name: {{selectedVersionObj.name}}</h5>
             <div class="tw-ml-3">
-              <button @click="toggleEditionModal(currentProject.id)" type="button" class="focus:tw-outline-none tw-text-white tw-bg-purple-700 hover:tw-bg-purple-800 focus:tw-ring-4 focus:tw-ring-purple-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-3 tw-py-1.5 dark:tw-bg-purple-600 dark:hover:tw-bg-purple-700 dark:focus:tw-ring-purple-900">
+              <button @click="toggleEditVersion(selectedVersionObj.id)" type="button" class="focus:tw-outline-none tw-text-white tw-bg-purple-700 hover:tw-bg-purple-800 focus:tw-ring-4 focus:tw-ring-purple-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-3 tw-py-1.5 dark:tw-bg-purple-600 dark:hover:tw-bg-purple-700 dark:focus:tw-ring-purple-900">
                 <h3 class="tw-text-white">Edit</h3>
               </button>
               <button @click="toggleVersionDeletionModal(selectedVersionObj.id)" type="button" class="tw-ml-2 focus:tw-outline-none tw-text-white tw-bg-purple-700 hover:tw-bg-purple-800 focus:tw-ring-4 focus:tw-ring-purple-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-3 tw-py-1.5 dark:tw-bg-purple-600 dark:hover:tw-bg-purple-700 dark:focus:tw-ring-purple-900">
@@ -209,10 +223,10 @@ async function deleteProject() {
           <DeleteProjectModal @deleted="deleteProject" @cancel="toggleDeletionModal"/>
         </Modal>
         <Modal v-if="newVersionModal" @close="toggleNewVersionModal">
-          <AddVersion :project-id="projectVersionId"/>
+          <AddVersion :project-id="projectVersionId" @done="createdver"/>
         </Modal>
         <Modal v-if="editVersion" @close="toggleEditVersion">
-
+          <DashboardCRUDEditVersion :version-id="versionEditId" @edited="closeVersionEditor"/>
         </Modal>
         <Modal v-if="versionDeletion" @close="toggleVersionDeletionModal">
           <DeleteProjectModal @deleted="deleteVersion" @cancel="toggleVersionDeletionModal"/>

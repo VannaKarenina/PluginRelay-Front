@@ -2,12 +2,15 @@
 
 import ErrorModal from "~/components/InfoModals/ErrorModal.vue";
 import SuccessModal from "~/components/InfoModals/SuccessModal.vue";
-import {def} from "@vue/shared";
 import {$fetch} from "ofetch";
 
 const store = useAuthStore();
 const props = defineProps([
     'projectId'
+])
+
+const emit = defineEmits([
+    'done'
 ])
 
 //refs
@@ -26,10 +29,14 @@ const extension = {
 function fileUpload(e) {
   let file = e.target.files
   eFile.value = file[0];
-  console.log(file)
 }
-function closeSuccessModal() {
-  success.value.close()
+function closeSuccessModal(emt?: number) {
+  if (emt) {
+    success.value.close()
+    emit('done')
+  } else {
+    success.value.close()
+  }
 }
 
 async function create() {
@@ -48,6 +55,7 @@ async function create() {
       version: payload.value.version
     }
   })
+
   if (eFile.value.name && eFile.value.name.length > 0) {
     var formData = new FormData()
     formData.append("id", newVer);
@@ -60,11 +68,11 @@ async function create() {
         Authorization: `Bearer ${store.token}`
       }
     })
+  }
 
-    if (newVer && plugin) {
-      success.value.error = "Version created";
-      success.value.close();
-    }
+  if (newVer) {
+    success.value.error = "Version created";
+    success.value.close();
   }
 
 }
@@ -98,7 +106,7 @@ async function create() {
         </button>
       </form>
     </div>
-    <SuccessModal @ok="closeSuccessModal" ref="success"/>
+    <SuccessModal @ok="closeSuccessModal(1)" ref="success"/>
     <ErrorModal ref="error"/>
   </div>
 </template>
