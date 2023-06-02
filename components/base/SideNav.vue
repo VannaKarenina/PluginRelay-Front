@@ -5,14 +5,15 @@ const emit = defineEmits([
     'state'
 ])
 const store = useAuthStore();
-const account = ref({});
 const dashboardState = ref(0);
+const account = ref({});
+
 try {
   account.value = await $fetch('http://127.0.0.1:3890/v1/account/identity', {
     headers: {
       Authorization: `Bearer ${store.token}`
     }
-  })
+  });
 } catch (error) {
   if (error.response && error.response.status === 401) {
     store.logout()
@@ -21,6 +22,7 @@ try {
     console.error(error);
   }
 }
+
 function changeDashboardState(state: number) {
   switch (state) {
     case 0:
@@ -28,6 +30,9 @@ function changeDashboardState(state: number) {
       break;
     case 1:
       emit('state', 1)
+      break;
+    case 2:
+      emit('state', 2)
       break;
   }
 }
@@ -37,6 +42,8 @@ function getPermsLevel(perm: number) {
       return 'User';
     case 1:
       return 'Moderator'
+    case 2:
+      return 'SAdmin'
   }
 }
 </script>
@@ -101,8 +108,8 @@ function getPermsLevel(perm: number) {
             <span class="tw-text-lg tw-text-center">Projects</span>
           </a>
           <a
-              v-if="account.moderation_level >= 1"
-              @click="changeDashboardState(3)"
+              v-if="account.moderation_level > 1"
+              @click="changeDashboardState(2)"
               class="tw-text-sm tw-font-medium tw-text-white tw-py-2 tw-px-2 hover:tw-bg-teal-500 hover:tw-text-white hover:tw-text-base tw-rounded-md tw-transition tw-duration-150 tw-ease-in-out"
           >
             <svg class="tw-w-8 tw-h-8 tw-fill-current tw-inline-block" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">

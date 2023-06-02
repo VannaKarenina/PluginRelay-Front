@@ -16,7 +16,7 @@ function check() {
 </script>
 
 <template>
-  <div class="tw-flex tw-flex-col tw-w-auto tw-h-145 tw-items-center tw-bg-white tw-border tw-border-gray-200 tw-rounded-md tw-shadow md:tw-flex-row hover:tw-bg-gray-100 dark:tw-border-gray-700 dark:tw-bg-gray-800 dark:hover:tw-bg-gray-700">
+  <div class="tw-flex tw-flex-col tw-w-auto tw-h-auto tw-items-center tw-bg-white tw-border tw-border-gray-200 tw-rounded-md tw-shadow md:tw-flex-row hover:tw-bg-gray-100 dark:tw-border-gray-700 dark:tw-bg-gray-800 dark:hover:tw-bg-gray-700">
     <img class="tw-m-2 tw-rounded-lg tw-w-24 tw-h-24" :src="getImage(project.favicon_path)" />
     <div class="tw-flex tw-m-2 tw-flex-col tw-justify-center tw-leading-normal">
       <h5 class="tw-text-xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">{{project.name}}</h5>

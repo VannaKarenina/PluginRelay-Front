@@ -3,37 +3,32 @@ import {useAuthStore} from "~/stores/auth";
 import SideNav from "~/components/base/SideNav.vue";
 import {$fetch} from "ofetch";
 import Projects from "~/components/dashboard/Projects.vue";
+import Games from "~/pages/categories/index.vue";
+import GamesAdmin from "~/components/dashboard/GamesAdmin.vue";
 
 definePageMeta({
   middleware: [
     "auth"
   ]
 })
-
+const user = ref({});
 const store = useAuthStore();
 const state = ref(0);
 
-const {data: user} = await useAsyncData(
-    'user',
-    () => {
-      try {
-        return $fetch('http://127.0.0.1:3890/v1/account/identity', {
-          headers: {
-            Authorization: `Bearer ${store.token}`
-          }
-        });
-      } catch (error) {
-        if (error.response && error.response.status === 401) {
-          store.logout()
-          navigateTo('/')
-        } else {
-          console.error(error);
-        }
-      }
+try {
+  user.value = await $fetch('http://127.0.0.1:3890/v1/account/identity', {
+    headers: {
+      Authorization: `Bearer ${store.token}`
     }
-
-
-)
+  });
+} catch (error) {
+  if (error.response && error.response.status === 401) {
+    store.logout()
+    navigateTo('/')
+  } else {
+    console.error(error);
+  }
+}
 
 function changeState(e) {
   switch (e) {
@@ -42,6 +37,9 @@ function changeState(e) {
       break;
     case 1:
       state.value = 1;
+      break;
+    case 2:
+      state.value = 2;
       break;
 
   }
@@ -74,7 +72,7 @@ function changeState(e) {
       </div>
     </div>
     <Projects v-if="state == 1" />
-    <Games v-if="user.moderation_level >= 1 && state == 3"/>
+    <GamesAdmin v-if="state == 2"/>
   </div>
 </template>
 

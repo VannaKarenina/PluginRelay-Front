@@ -3,7 +3,7 @@ import {defineComponent} from 'vue'
 import AllGames from "~/components/view/AllGames.vue";
 
 export default defineComponent({
-    name: "games",
+    name: "index",
     components: {AllGames}
 })
 </script>
