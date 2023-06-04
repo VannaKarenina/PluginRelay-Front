@@ -3,7 +3,9 @@
 import ErrorModal from "~/components/InfoModals/ErrorModal.vue";
 import SuccessModal from "~/components/InfoModals/SuccessModal.vue";
 import {$fetch} from "ofetch";
-
+const emits = defineEmits([
+    'cd'
+])
 const success = ref(null);
 const error = ref(null);
 const store = useAuthStore();
@@ -24,17 +26,24 @@ payload.value.accid = account.id;
 
 function closeSuccessModal() {
   success.value.close()
+  emits('cd')
 }
 
 async function create() {
   let image;
-
+  console.log({
+    accid: account.id,
+    ...payload
+  })
   const category = await $fetch('http://127.0.0.1:3890/v1/category/new', {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${store.token}`
     },
-    body: payload
+    body: {
+      accid: account.id,
+      ...payload.value
+    }
   })
 
   if (eFile.value.name && eFile.value.name.length > 0) {
@@ -50,6 +59,11 @@ async function create() {
         Authorization: `Bearer ${store.token}`
       }
     })
+  }
+
+  if(category && image) {
+    success.value.error = "Game Created";
+    success.value.close();
   }
 }
 

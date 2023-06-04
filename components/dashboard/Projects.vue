@@ -165,7 +165,7 @@ async function closeVersionEditor() {
       <div v-if="!processing" class="tw-p-2 tw-grid tw-grid-cols-1 sm:tw-grid-cols-1 md:tw-grid-cols-1 lg:tw-grid-cols-2 tw-gap-4 tw-mt-5">
         <!-- Loop through projects -->
         <div v-for="(project, index) in projects" :key="index">
-          <DevProjectCard @click="openProjectModal(project.id)" :project="project"/>
+          <DevProjectCard @click="openProjectModal(project.id)" :project="project"  ref="devcard"/>
         </div>
       </div>
     </div>

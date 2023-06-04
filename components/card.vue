@@ -33,11 +33,11 @@ export default {
         }
     },
     mounted() {
-        if (this.project.image !== undefined) {
-          this.image += this.project.image
-        } else {
-          this.image += 'default.png'
-        }
+      if (this.project.image != null) {
+        this.image += this.project.image
+      } else {
+        this.image += 'default.png'
+      }
     }
 }
 </script>

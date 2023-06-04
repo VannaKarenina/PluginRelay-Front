@@ -6,10 +6,22 @@ import DevCard from "~/components/dashboard/DevCard.vue";
 
 const creation = ref(false);
 
-const categories = await $fetch('http://127.0.0.1:3890/v1/category/all');
+const {data: categories, refresh: refr} = useAsyncData(
+    'categories',
+    () => $fetch('http://127.0.0.1:3890/v1/category/all')
+)
 
 function toggleCreationModal() {
   creation.value = !creation.value
+}
+
+async function refreshCategories() {
+  await refr();
+  toggleCreationModal();
+}
+
+async function createdCategory() {
+  await refreshCategories();
 }
 </script>
 <template>
@@ -27,7 +39,7 @@ function toggleCreationModal() {
       </div>
     </div>
     <Modal v-if="creation" @close="toggleCreationModal">
-      <CategoryCreation/>
+      <CategoryCreation @cd="createdCategory"/>
     </Modal>
   </div>
 </template>
