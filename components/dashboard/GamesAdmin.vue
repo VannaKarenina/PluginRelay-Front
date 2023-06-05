@@ -5,18 +5,23 @@ import Modal from "~/components/base/Modal.vue";
 import DevCard from "~/components/dashboard/DevCard.vue";
 
 const creation = ref(false);
+const config = useRuntimeConfig();
 
 const {data: categories, refresh: refr} = useAsyncData(
     'categories',
-    () => $fetch('http://127.0.0.1:3890/v1/category/all')
+    () => $fetch(`${config.public.baseUrl}/v1/category/all`)
 )
 
 function toggleCreationModal() {
   creation.value = !creation.value
 }
 
-async function refreshCategories() {
+async function refreshGamesBridge() {
   await refr();
+}
+
+async function refreshCategories() {
+  await refreshGamesBridge();
   toggleCreationModal();
 }
 
@@ -33,7 +38,7 @@ async function createdCategory() {
       <div class="tw-flex-col">
         <div class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-3 md:tw-grid-cols-5 lg:tw-grid-cols-5 tw-gap-4 tw-mt-5">
           <div v-for="(category, index) in categories" :key="index">
-            <DevCard :project="category" />
+            <DevCard :project="category" @rmgame="refreshGamesBridge" />
           </div>
         </div>
       </div>

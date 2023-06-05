@@ -38,16 +38,29 @@ async function imageref(e) {
   if (file && file[0]) {
     let reader = new FileReader
     reader.onload = e => {
-      image.value = e.target.result
+      let img = new Image();
+      img.src = e.target.result;
+      image.value = e.target.result;
+      img.onload = () => {
+        const {
+            width,
+            height
+        } = img;
+        if (width > 800 && height > 800) {
+          error.value.error = "Image size need to be 800x800";
+          error.value.close();
+          return;
+        }
+      }
     }
     reader.readAsDataURL(file[0])
   }
   preview.value = true;
 }
-
+const config = useRuntimeConfig();
 async function create() {
   let favicon;
-  const project = await $fetch('http://127.0.0.1:3890/v1/project/create', {
+  const project = await $fetch(`${config.public.baseUrl}/v1/project/create`, {
     method: 'POST',
     body: {
       accountId: user.id,
@@ -64,7 +77,7 @@ async function create() {
     formData.append("file", eFile.value)
 
 
-    favicon = await $fetch('http://127.0.0.1:3890/v1/storage/uploadProjectFavicon', {
+    favicon = await $fetch(`${config.public.baseUrl}/v1/storage/uploadProjectFavicon`, {
       method: 'POST',
       body: formData,
       headers: {
@@ -151,7 +164,7 @@ function closeSuccessModal() {
   height: 250px;
   display: block;
   cursor: pointer;
-  background-size: cover;
+  background-size: contain;
   background-position: center center;
 }
 </style>

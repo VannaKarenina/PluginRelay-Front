@@ -2,7 +2,11 @@
 import {defineNuxtConfig} from "nuxt/config";
 
 export default defineNuxtConfig({
-    //TODO: Define global runtime config to make global API var
+    runtimeConfig: {
+      public: {
+          baseUrl: 'http://127.0.0.1:3890'
+      }
+    },
     css: [
         '~/assets/styles/main.css',
         'vuetify/lib/styles/main.sass',

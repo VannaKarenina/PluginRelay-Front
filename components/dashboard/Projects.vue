@@ -9,19 +9,24 @@ import DevProjectCard from "~/components/dashboard/DevProjectCard.vue";
 import DeleteProjectModal from "~/components/dashboard/CRUD/DeleteProjectModal.vue";
 import EditProject from "~/components/dashboard/CRUD/EditProject.vue";
 import AddVersion from "~/components/dashboard/CRUD/AddVersion.vue";
-
+const config = useRuntimeConfig();
 const store = useAuthStore();
 const {data: user, pending: processing} = await useAsyncData(
     'user',
-    () => $fetch('http://127.0.0.1:3890/v1/account/identity', {
+    () => $fetch(`${config.public.baseUrl}/v1/account/identity`, {
       headers: {
         Authorization: `Bearer ${store.token}`,
       }
     }),
-)
+).catch((error) => {
+  if(error) {
+    store.logout()
+    navigateTo('/')
+  }
+})
 const {data: projects, refresh: refreshProjects} = await useAsyncData(
     'projects',
-    () => $fetch('http://127.0.0.1:3890/v1/project/projects/1')
+    () => $fetch(`${config.public.baseUrl}/v1/project/projects/${user.value.id}`)
 )
 const refreshUser = async () => await refreshNuxtData('user');
 const currentProject = ref({});
@@ -64,7 +69,7 @@ function toggleNewVersionModal(id?: number) {
 }
 
 async function refetchProject(id: number) {
-  currentProject.value = await $fetch(`http://127.0.0.1:3890/v1/project/${id}`);
+  currentProject.value = await $fetch(`${config.public.baseUrl}/v1/project/${id}`);
 }
 
 async function openProjectModal(id: number) {
@@ -113,7 +118,7 @@ function toggleVersionDeletionModal(id?: number) {
 }
 
 async function deleteVersion() {
-  const deletion = await $fetch('http://127.0.0.1:3890/v1/project/deleteVersion', {
+  const deletion = await $fetch(`${config.public.baseUrl}/v1/project/deleteVersion`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${store.token}`,
@@ -130,7 +135,7 @@ async function deleteVersion() {
 }
 
 async function deleteProject() {
-  const deletion = await $fetch('http://127.0.0.1:3890/v1/project/delete', {
+  const deletion = await $fetch(`${config.public.baseUrl}/v1/project/delete`, {
     method: 'POST',
     body: {
       id: projectToDelete.value

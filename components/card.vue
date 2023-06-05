@@ -21,6 +21,10 @@
 
 <script>
 export default {
+    setup() {
+      const config = useRuntimeConfig();
+      return {config}
+    },
     props: {
         project: {
             type: Object,
@@ -29,7 +33,7 @@ export default {
     },
     data() {
         return {
-            image: 'http://127.0.0.1:3890/v1/storage/getCategoryAvatar?key='
+            image: `${this.config.public.baseUrl}/v1/storage/getCategoryAvatar?key=`
         }
     },
     mounted() {

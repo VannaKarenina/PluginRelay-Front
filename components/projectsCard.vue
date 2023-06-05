@@ -9,14 +9,18 @@ export default defineComponent({
       required: true
     }
   },
+  setup() {
+    const config = useRuntimeConfig();
+    return {config}
+  },
   data() {
     return {
-      image: 'http://127.0.0.1:3890/v1/storage/getProjectAvatar?key=default.png'
+      image: `${this.config.public.baseUrl}/v1/storage/getProjectAvatar?key=default.png`
     }
   },
   mounted() {
     if (this.project.favicon_path) {
-      this.image = 'http://127.0.0.1:3890/v1/storage/getProjectAvatar?key=' + this.project.favicon_path
+      this.image = `${this.config.public.baseUrl}/v1/storage/getProjectAvatar?key=` + this.project.favicon_path
     }
   },
   methods: {

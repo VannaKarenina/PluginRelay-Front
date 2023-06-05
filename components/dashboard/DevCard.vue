@@ -17,24 +17,46 @@
       Modifications: {{ project.projects.length }}
     </v-card-subtitle>
     <ErrorModal ref="error"/>
-    <button type="button" class="focus:tw-outline-none tw-text-white tw-bg-purple-700 hover:tw-bg-purple-800 focus:tw-ring-4 focus:tw-ring-purple-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5 tw-mb-2 dark:tw-bg-purple-600 dark:hover:tw-bg-purple-700 dark:focus:tw-ring-purple-900">Delete</button>
+    <button @click="deleteGame(project.id)" type="button" class="tw-ml-5 focus:tw-outline-none tw-text-white tw-bg-purple-700 hover:tw-bg-purple-800 focus:tw-ring-4 focus:tw-ring-purple-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5 tw-mb-2">
+      <div class="tw-text-white">
+        Delete
+      </div>
+    </button>
+
+    <Modal v-if="gameDeletion" @close="toggleGameDeletion">
+      <DeleteGameModal @deleted="this.delete" @cancel="toggleGameDeletion"/>
+    </Modal>
   </v-card>
 </template>
 
 <script>
 import ErrorModal from "~/components/InfoModals/ErrorModal.vue";
+import {useAuthStore} from "~/stores/auth";
+import DeleteProjectModal from "~/components/dashboard/CRUD/DeleteProjectModal.vue";
+import Modal from "~/components/base/Modal.vue";
+import DeleteGameModal from "~/components/dashboard/CRUD/DeleteGameModal.vue";
 
 export default {
-  components: {ErrorModal},
+  components: {DeleteGameModal, Modal, DeleteProjectModal, ErrorModal},
   props: {
     project: {
       type: Object,
       required: true
     }
   },
+  setup() {
+    const store = useAuthStore();
+    const config = useRuntimeConfig();
+    return {
+      store,
+      config
+    }
+  },
   data() {
     return {
-      image: 'http://127.0.0.1:3890/v1/storage/getCategoryAvatar?key='
+      image: `${this.config.public.baseUrl}/v1/storage/getCategoryAvatar?key=`,
+      deleteid: 0,
+      gameDeletion: false
     }
   },
   mounted() {
@@ -45,8 +67,25 @@ export default {
     }
   },
   methods: {
-    deleteProjectModal() {
+    toggleGameDeletion() {
+      this.gameDeletion = !this.gameDeletion
+    },
+    deleteGame(id) {
+      this.deleteid = id;
+      this.toggleGameDeletion();
+    },
+    async delete() {
+      console.log(this.deleteid)
+      const deletion = await $fetch(`${this.config.public.baseUrl}/v1/category/delete/${this.deleteid}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${this.store.token}`
+        }
+      })
 
+      if (deletion.code === 801) {
+        this.$emit('rmgame');
+      }
     }
   }
 }

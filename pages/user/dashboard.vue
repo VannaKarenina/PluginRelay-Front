@@ -1,34 +1,19 @@
 <script setup lang="ts">
 import {useAuthStore} from "~/stores/auth";
 import SideNav from "~/components/base/SideNav.vue";
-import {$fetch} from "ofetch";
 import Projects from "~/components/dashboard/Projects.vue";
-import Games from "~/pages/categories/index.vue";
 import GamesAdmin from "~/components/dashboard/GamesAdmin.vue";
+import {$fetch} from "ofetch";
+import Dash from "~/components/dashboard/Dash.vue";
 
 definePageMeta({
   middleware: [
     "auth"
   ]
 })
-const user = ref({});
 const store = useAuthStore();
-const state = ref(0);
-
-try {
-  user.value = await $fetch('http://127.0.0.1:3890/v1/account/identity', {
-    headers: {
-      Authorization: `Bearer ${store.token}`
-    }
-  });
-} catch (error) {
-  if (error.response && error.response.status === 401) {
-    store.logout()
-    navigateTo('/')
-  } else {
-    console.error(error);
-  }
-}
+const state = ref(-1);
+const isUserFetched = ref(false);
 
 function changeState(e) {
   switch (e) {
@@ -48,29 +33,8 @@ function changeState(e) {
 
 <template>
   <div class="tw-flex tw-flex-row tw-min-h-screen">
-    <SideNav :account="user" @state="changeState" />
-    <div v-if="state == 0" class="tw-w-screen tw-flex tw-flex-row tw-justify-around tw-items-center mb-16">
-      <div class="tw-w-60 tw-h-60 tw-bg-gray-700 tw-flex tw-rounded-lg tw-items-center tw-justify-center">
-        <div class="tw-justify-self-center tw-text-center">
-          <div class="tw-text-xl tw-text-white">
-            {{user.projects.length}}
-          </div>
-          <div class="tw-text-xl tw-text-white">
-            PROJECTS
-          </div>
-        </div>
-      </div>
-      <div class="tw-w-60 tw-h-60 tw-bg-gray-700 tw-flex tw-rounded-lg tw-items-center tw-justify-center">
-        <div class="tw-justify-self-center tw-text-center">
-          <div class="tw-text-xl tw-text-white">
-            {{user.projects.reduce((total, obj) => total + obj.downloads, 0)}}
-          </div>
-          <div class="tw-text-xl tw-text-white">
-            DOWNLOADS
-          </div>
-        </div>
-      </div>
-    </div>
+    <SideNav @state="changeState" />
+    <Dash v-if="state == 0"/>
     <Projects v-if="state == 1" />
     <GamesAdmin v-if="state == 2"/>
   </div>

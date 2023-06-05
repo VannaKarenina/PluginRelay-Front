@@ -8,6 +8,7 @@ const store = useAuthStore();
 const props = defineProps([
     'projectId'
 ])
+const config = useRuntimeConfig();
 
 const emit = defineEmits([
     'done'
@@ -43,7 +44,7 @@ async function create() {
 
   let plugin;
 
-  const newVer = await $fetch('http://127.0.0.1:3890/v1/project/newVer', {
+  const newVer = await $fetch(`${config.public.baseUrl}/v1/project/newVer`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${store.token}`,
@@ -61,7 +62,7 @@ async function create() {
     formData.append("id", newVer);
     formData.append("file", eFile.value)
 
-    plugin = await $fetch('http://127.0.0.1:3890/v1/storage/uploadProjectFile', {
+    plugin = await $fetch(`${config.public.baseUrl}/v1/storage/uploadProjectFile`, {
       method: 'POST',
       body: formData,
       headers: {
@@ -86,15 +87,15 @@ async function create() {
         <div class="">
           <div class="sm:tw-col-span-2">
             <label for="name" class="tw-block tw-mb-2 tw-text-sm tw-font-medium tw-text-gray-900 dark:tw-text-white">Name</label>
-            <input v-model="payload.name" type="text" name="name" id="name" class="tw-bg-gray-50 tw-border tw-border-gray-300 tw-text-gray-900 tw-text-sm tw-rounded-lg focus:tw-ring-primary-600 focus:tw-border-primary-600 tw-block tw-w-full tw-p-2.5 dark:tw-bg-gray-700 dark:tw-border-gray-600 dark:tw-placeholder-gray-400 dark:tw-text-white dark:focus:tw-ring-primary-500 dark:focus:tw-border-primary-500" placeholder="Type product name" required="required">
+            <input v-model="payload.name" type="text" name="name" id="name" class="tw-bg-gray-50 tw-border tw-border-gray-300 tw-text-gray-900 tw-text-sm tw-rounded-lg focus:tw-ring-primary-600 focus:tw-border-primary-600 tw-block tw-w-full tw-p-2.5 dark:tw-bg-gray-700 dark:tw-border-gray-600 dark:tw-placeholder-gray-400 dark:tw-text-white dark:focus:tw-ring-primary-500 dark:focus:tw-border-primary-500" placeholder="Name" required="required">
           </div>
           <div class="sm:tw-col-span-2 tw-mt-3">
             <label for="desc" class="tw-block tw-mb-2 tw-text-sm tw-font-medium tw-text-gray-900 dark:tw-text-white">Description</label>
-            <input v-model="payload.description" type="text" name="desc" id="desc" class="tw-bg-gray-50 tw-border tw-border-gray-300 tw-text-gray-900 tw-text-sm tw-rounded-lg focus:tw-ring-primary-600 focus:tw-border-primary-600 tw-block tw-w-full tw-p-2.5 dark:tw-bg-gray-700 dark:tw-border-gray-600 dark:tw-placeholder-gray-400 dark:tw-text-white dark:focus:tw-ring-primary-500 dark:focus:tw-border-primary-500" placeholder="Product brand" required="required">
+            <input v-model="payload.description" type="text" name="desc" id="desc" class="tw-bg-gray-50 tw-border tw-border-gray-300 tw-text-gray-900 tw-text-sm tw-rounded-lg focus:tw-ring-primary-600 focus:tw-border-primary-600 tw-block tw-w-full tw-p-2.5 dark:tw-bg-gray-700 dark:tw-border-gray-600 dark:tw-placeholder-gray-400 dark:tw-text-white dark:focus:tw-ring-primary-500 dark:focus:tw-border-primary-500" placeholder="Description" required="required">
           </div>
           <div class="sm:tw-col-span-2 tw-mt-3">
-            <label for="ver" class="tw-block tw-mb-2 tw-text-sm tw-font-medium tw-text-gray-900 dark:tw-text-white">Description</label>
-            <input v-model="payload.version" type="text" name="ver" id="ver" class="tw-bg-gray-50 tw-border tw-border-gray-300 tw-text-gray-900 tw-text-sm tw-rounded-lg focus:tw-ring-primary-600 focus:tw-border-primary-600 tw-block tw-w-full tw-p-2.5 dark:tw-bg-gray-700 dark:tw-border-gray-600 dark:tw-placeholder-gray-400 dark:tw-text-white dark:focus:tw-ring-primary-500 dark:focus:tw-border-primary-500" placeholder="Product brand" required="required">
+            <label for="ver" class="tw-block tw-mb-2 tw-text-sm tw-font-medium tw-text-gray-900 dark:tw-text-white">Version</label>
+            <input v-model="payload.version" type="text" name="ver" id="ver" class="tw-bg-gray-50 tw-border tw-border-gray-300 tw-text-gray-900 tw-text-sm tw-rounded-lg focus:tw-ring-primary-600 focus:tw-border-primary-600 tw-block tw-w-full tw-p-2.5 dark:tw-bg-gray-700 dark:tw-border-gray-600 dark:tw-placeholder-gray-400 dark:tw-text-white dark:focus:tw-ring-primary-500 dark:focus:tw-border-primary-500" placeholder="1.0.1-beta" required="required">
           </div>
           <div class="sm:tw-col-span-2 tw-mt-3">
             <label class="tw-block tw-mb-2 tw-text-sm tw-font-medium tw-text-gray-900 dark:tw-text-white" for="file_input">Upload file</label>

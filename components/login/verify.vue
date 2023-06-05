@@ -6,6 +6,10 @@ import SuccessModal from "~/components/InfoModals/SuccessModal.vue";
 export default defineComponent({
   name: "verify",
   components: {SuccessModal, ErrorModal},
+  setup() {
+    const config = useRuntimeConfig();
+    return {config}
+  },
   data() {
     return {
       code: ''
@@ -19,7 +23,7 @@ export default defineComponent({
   },
   methods: {
     async submit() {
-      const data = await $fetch('http://127.0.0.1:3890/v1/account/verify', {
+      const data = await $fetch(`${this.config.public.baseUrl}/v1/account/verify`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

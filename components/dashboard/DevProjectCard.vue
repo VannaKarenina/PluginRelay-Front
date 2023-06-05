@@ -3,11 +3,12 @@ const props = defineProps(['project'])
 function getDate(stamp: any) {
   return new Date(stamp).toISOString().split('T')[0];
 }
+const config = useRuntimeConfig();
 function getImage(img: any) {
   if (img != null || img != undefined) {
-    return 'http://127.0.0.1:3890/v1/storage/getProjectAvatar?key=' + img
+    return `${config.public.baseUrl}/v1/storage/getProjectAvatar?key=` + img
   } else {
-    return 'http://127.0.0.1:3890/v1/storage/getProjectAvatar?key=default.png'
+    return `${config.public.baseUrl}/v1/storage/getProjectAvatar?key=default.png`
   }
 }
 function check() {

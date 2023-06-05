@@ -9,8 +9,8 @@ const emits = defineEmits([
 const success = ref(null);
 const error = ref(null);
 const store = useAuthStore();
-
-const account = await $fetch('http://127.0.0.1:3890/v1/account/identity', {
+const config = useRuntimeConfig();
+const account = await $fetch(`${config.public.baseUrl}/v1/account/identity`, {
   headers: {
     Authorization: `Bearer ${store.token}`
   }
@@ -35,7 +35,7 @@ async function create() {
     accid: account.id,
     ...payload
   })
-  const category = await $fetch('http://127.0.0.1:3890/v1/category/new', {
+  const category = await $fetch(`${config.public.baseUrl}/v1/category/new`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${store.token}`
@@ -52,7 +52,7 @@ async function create() {
     formData.append("file", eFile.value)
 
 
-    image = await $fetch('http://127.0.0.1:3890/v1/storage/uploadGameImage', {
+    image = await $fetch(`${config.public.baseUrl}/v1/storage/uploadGameImage`, {
       method: 'POST',
       body: formData,
       headers: {
@@ -77,7 +77,20 @@ async function imageref(e) {
   if (file && file[0]) {
     let reader = new FileReader
     reader.onload = e => {
-      image.value = e.target.result
+      let img = new Image();
+      img.src = e.target.result;
+      image.value = e.target.result;
+      img.onload = () => {
+        const {
+          width,
+          height
+        } = img;
+        if (width > 285 && height > 380) {
+          error.value.error = "Image size need to be 285x380";
+          error.value.close();
+          return;
+        }
+      }
     }
     reader.readAsDataURL(file[0])
   }

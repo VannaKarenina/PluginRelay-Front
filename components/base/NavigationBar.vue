@@ -29,9 +29,12 @@
         </div>
 
       <Modal v-if="showModal" @close="closeModal">
-        <signin v-if="loginModalState == 1" @close="signUpState" @verify="verifyModal" @redirect="redirect"/>
+        <signin v-if="loginModalState == 1" @close="signUpState" @verify="verifyModal" @redirect="redirect" @recovery="recoveryState"/>
         <signup v-if="loginModalState ==2" @close="signInState" @verify="verifyModal"/>
         <verify :email="verificationEmail" v-if="loginModalState == 3" @close="signInState"/>
+        <recovery v-if="loginModalState == 4" @code="recoveryVerifyState" @signin="signInState" />
+        <verifyrecovery v-if="loginModalState == 5" @signature="changePassState" :login-or-email="verificationEmail"/>
+        <recoverypass v-if="loginModalState == 6" :login-or-email="verificationEmail" :signature="sign" @done="signInState"/>
       </Modal>
     </div>
 
@@ -45,10 +48,13 @@ import Signin from "~/components/login/signin.vue";
 import Signup from "~/components/login/signup.vue";
 import Verify from "~/components/login/verify.vue";
 import {useAuthStore} from "~/stores/auth";
+import Recovery from "~/components/login/recovery.vue";
+import Verifyrecovery from "~/components/login/verifyrecovery.vue";
+import Recoverypass from "~/components/login/recoverypass.vue";
 
 export default defineComponent({
     name: "NavigationBar",
-  components: {Verify, Signup, Signin, Modal},
+  components: {Recoverypass, Verifyrecovery, Recovery, Verify, Signup, Signin, Modal},
     async setup() {
       const route = useRoute();
 
@@ -84,7 +90,8 @@ export default defineComponent({
                 }
             ],
             loginModalState: 1,
-            verificationEmail: ''
+            verificationEmail: '',
+            sign: ''
         }
     },
     methods: {
@@ -107,6 +114,17 @@ export default defineComponent({
       verifyModal(e) {
         this.verificationEmail = e;
         this.loginModalState = 3
+      },
+      recoveryState() {
+        this.loginModalState = 4;
+      },
+      recoveryVerifyState(e) {
+        this.verificationEmail = e;
+        this.loginModalState = 5;
+      },
+      changePassState(e) {
+        this.sign = e;
+        this.loginModalState = 6;
       }
     }
 })

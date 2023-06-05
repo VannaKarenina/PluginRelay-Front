@@ -6,6 +6,10 @@ import ErrorModal from "~/components/InfoModals/ErrorModal.vue";
 export default defineComponent({
   name: "signup",
   components: {ErrorModal},
+  setup() {
+    const config = useRuntimeConfig();
+    return {config}
+  },
   methods: {
     changeToSifnIn() {
       this.$emit('close')
@@ -16,7 +20,7 @@ export default defineComponent({
         return;
       }
 
-      const data = await $fetch('http://127.0.0.1:3890/v1/account/create', {
+      const data = await $fetch(`${this.config.public.baseUrl}/v1/account/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

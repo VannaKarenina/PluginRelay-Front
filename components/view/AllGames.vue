@@ -5,10 +5,11 @@ import {useAuthStore} from "~/stores/auth";
 export default defineComponent({
     name: "AllGames",
     setup() {
-      const authStore = useAuthStore();
+      const config = useRuntimeConfig();
+      return {config}
     },
     async mounted() {
-        this.categories = await $fetch('http://127.0.0.1:3890/v1/category/all');
+        this.categories = await $fetch(`${this.config.public.baseUrl}/v1/category/all`);
     },
     data() {
         return {

@@ -62,7 +62,7 @@ export default defineComponent(
       components: {Modal},
       async setup() {
         const route = useRoute();
-
+        const config = useRuntimeConfig();
         const showModal = ref(false);
 
         function openModal() {
@@ -77,13 +77,14 @@ export default defineComponent(
           showModal,
           openModal,
           closeModal,
+          config
         };
       },
       data() {
         return {
           projectId: this.route.params.id,
           modal: false,
-          image: 'http://127.0.0.1:3890/v1/storage/getCategoryAvatar?key=wl.png',
+          image: `${this.config.public.baseUrl}/v1/storage/getCategoryAvatar?key=wl.png`,
           category: {} as object,
           currentProject: {} as object,
           selectedVersion: -1,
@@ -92,12 +93,12 @@ export default defineComponent(
         }
       },
       async beforeMount() {
-        this.category = await $fetch(`http://127.0.0.1:3890/v1/category/${this.projectId}`);
+        this.category = await $fetch(`${this.config.public.baseUrl}/v1/category/${this.projectId}`);
         this.amountOfProjects = this.category.projects.length
       },
       methods: {
         async openProjectModal(id: number) {
-          this.currentProject = await $fetch(`http://127.0.0.1:3890/v1/project/${id}`);
+          this.currentProject = await $fetch(`${this.config.public.baseUrl}/v1/project/${id}`);
           this.openModal();
         },
         async selectedVersionChanged() {
@@ -110,7 +111,7 @@ export default defineComponent(
           this.closeModal()
         },
         async download(key: string, id: number) {
-          const file = await $fetch(`http://127.0.0.1:3890/v1/storage/versionFile?key=${key}&id=${id}`)
+          const file = await $fetch(`${this.config.public.baseUrl}/v1/storage/versionFile?key=${key}&id=${id}`)
 
 
 

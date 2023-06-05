@@ -2,13 +2,15 @@
 import {$fetch} from "ofetch";
 import ErrorModal from "~/components/InfoModals/ErrorModal.vue";
 import SuccessModal from "~/components/InfoModals/SuccessModal.vue";
+import {use} from "h3";
 const props = defineProps([
     'projectId',
     'userId'
 ])
+const config = useRuntimeConfig();
 const emit = defineEmits(['edited','succeed'])
-const categories = await $fetch('http://127.0.0.1:3890/v1/category/all');
-const project = await $fetch(`http://127.0.0.1:3890/v1/project/${props.projectId}`)
+const categories = await $fetch(`${config.public.baseUrl}/v1/category/all`);
+const project = await $fetch(`${config.public.baseUrl}/v1/project/${props.projectId}`)
 const success = ref(null);
 const error = ref(null);
 const store = useAuthStore();
@@ -39,7 +41,7 @@ async function edit() {
 
   let favicon;
 
-  const edit = await $fetch('http://127.0.0.1:3890/v1/project/edit', {
+  const edit = await $fetch(`${config.public.baseUrl}/v1/project/edit`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${store.token}`,
@@ -58,7 +60,7 @@ async function edit() {
     formData.append("file", eFile.value)
 
 
-    favicon = await $fetch('http://127.0.0.1:3890/v1/storage/uploadProjectFavicon', {
+    favicon = await $fetch(`${config.public.baseUrl}/v1/storage/uploadProjectFavicon`, {
       method: 'POST',
       body: formData,
       headers: {

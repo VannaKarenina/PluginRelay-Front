@@ -8,7 +8,7 @@ import {$fetch} from "ofetch";
 const success = ref(null);
 const error = ref(null);
 const store = useAuthStore();
-
+const config = useRuntimeConfig();
 let eFile = ref({});
 const version = ref({});
 const user = ref({});
@@ -22,7 +22,7 @@ const emit = defineEmits([
 ])
 
 try {
-  user.value = await $fetch('http://127.0.0.1:3890/v1/account/identity', {
+  user.value = await $fetch(`${config.public.baseUrl}/v1/account/identity`, {
     headers: {
       Authorization: `Bearer ${store.token}`,
     }
@@ -32,7 +32,7 @@ try {
   navigateTo('/')
 }
 
-version.value = await $fetch(`http://127.0.0.1:3890/v1/project/version/${props.versionId}`, {
+version.value = await $fetch(`${config.public.baseUrl}/v1/project/version/${props.versionId}`, {
   headers: {
     Authorization: `Bearer ${store.token}`,
   }
@@ -46,7 +46,7 @@ function closeSuccessModal() {
 async function edit() {
 
   let plugin;
-  const vers = await $fetch('http://127.0.0.1:3890/v1/project/editVersion', {
+  const vers = await $fetch(`${config.public.baseUrl}/v1/project/editVersion`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${store.token}`,
@@ -65,7 +65,7 @@ async function edit() {
     formData.append("id", version.value.id);
     formData.append("file", eFile.value)
 
-    plugin = await $fetch('http://127.0.0.1:3890/v1/storage/uploadProjectFile', {
+    plugin = await $fetch(`${config.public.baseUrl}/v1/storage/uploadProjectFile`, {
       method: 'POST',
       body: formData,
       headers: {

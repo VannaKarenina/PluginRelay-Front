@@ -25,8 +25,12 @@ import {defineComponent} from "vue";
 
 export default defineComponent({
     name: "CategoriesView",
+    setup() {
+      const config = useRuntimeConfig();
+      return {config}
+    },
     async mounted() {
-        this.projects = await $fetch('http://127.0.0.1:3890/v1/category/all');
+        this.projects = await $fetch(`${this.config.public.baseUrl}/v1/category/all`);
     },
     data() {
         return {

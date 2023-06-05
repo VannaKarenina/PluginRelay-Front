@@ -9,7 +9,8 @@ export default defineComponent({
   setup() {
     const store = useAuthStore();
     const route = useRoute();
-    return {store,route}
+    const config = useRuntimeConfig();
+    return {store,route, config}
   },
   methods: {
     changeToSignUp() {
@@ -17,7 +18,7 @@ export default defineComponent({
     },
     async login() {
 
-      const payload: any = await $fetch('http://127.0.0.1:3890/v1/account/login', {
+      const payload: any = await $fetch(`${this.config.public.baseUrl}/v1/account/login`, {
         method: 'POST',
         body: this.loginPayload
       })
@@ -27,14 +28,19 @@ export default defineComponent({
           this.$refs.err.error = 'Authorization failed';
           this.$refs.err.close();
         } else {
-          if (payload.code != 800) {
-            this.store.login(payload.access_token);
-            if (this.route.path != '/user/dashboard') {
-              this.$emit('redirect')
-              return navigateTo('/user/dashboard')
-            }
+          if (payload.code == 808) {
+            this.$refs.err.error = payload.message;
+            this.$refs.err.close();
           } else {
-            this.$emit('verify', this.loginPayload.loginOrEmail)
+            if (payload.code != 800) {
+              this.store.login(payload.access_token);
+              if (this.route.path != '/user/dashboard') {
+                this.$emit('redirect')
+                return navigateTo('/user/dashboard')
+              }
+            } else {
+              this.$emit('verify', this.loginPayload.loginOrEmail)
+            }
           }
         }
       } catch (e) {
@@ -42,6 +48,9 @@ export default defineComponent({
       }
 
     },
+    recovery() {
+      this.$emit('recovery');
+    }
   },
   data() {
     return {
@@ -76,7 +85,7 @@ export default defineComponent({
               <input v-model="loginPayload.password" type="password" name="password" id="password" placeholder="••••••••" class="tw-bg-gray-50 tw-border tw-border-gray-300 tw-text-gray-900 sm:tw-text-sm tw-rounded-lg focus:tw-ring-primary-600 focus:tw-border-primary-600 tw-block tw-w-full tw-p-2.5 dark:tw-bg-gray-700 dark:tw-border-gray-600 dark:tw-placeholder-gray-400 dark:tw-text-white dark:focus:tw-ring-blue-500 dark:focus:tw-border-blue-500" required="">
             </div>
             <div class="tw-flex tw-items-center tw-justify-between">
-              <a href="#" class="tw-text-sm tw-font-medium tw-text-blue-600 hover:tw-underline dark:tw-text-primary-500">Forgot password?</a>
+              <a @click="recovery" class="tw-text-sm tw-font-medium tw-text-blue-600 hover:tw-underline dark:tw-text-primary-500">Forgot password?</a>
             </div>
             <button type="submit" class="tw-w-full tw-text-white tw-bg-violet-800 hover:tw-bg-violet-700 focus:tw-ring-4 focus:tw-outline-none focus:tw-ring-violet-300 tw-font-medium tw-rounded-lg tw-text-sm tw-px-5 tw-py-2.5 tw-text-center dark:tw-bg-violet-600 dark:hover:tw-bg-violet-700 dark:focus:tw-ring-violet-800">Sign in</button>
             <p class="tw-text-sm tw-font-light tw-text-gray-500 dark:tw-text-gray-400">
