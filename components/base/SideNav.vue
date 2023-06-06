@@ -61,7 +61,7 @@ function getPermsLevel(perm: number) {
         <div id="profile" class="tw-space-y-3">
           <img
               v-if="account"
-              :src="`http://127.0.0.1:3890/v1/storage/getAccountImage?key=def.png`"
+              :src="`${config.public.baseUrl}/v1/storage/getAccountImage?key=def.png`"
               alt="Avatar user"
               class="tw-w-10 md:tw-w-16 tw-rounded-full tw-mx-auto"
           />
