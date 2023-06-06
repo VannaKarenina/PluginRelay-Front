@@ -11,7 +11,7 @@ export default defineComponent({
         <div class="tw-mx-auto tw-max-w-screen-xl">
             <div class="md:tw-flex md:tw-justify-between">
                 <div class="tw-mb-6 md:tw-mb-0">
-                    <a href="https://flowbite.com" class="tw-flex tw-items-center">
+                    <a class="tw-flex tw-items-center">
                         <img src="https://flowbite.com/docs/images/logo.svg" class="tw-mr-3 tw-h-8" alt="FlowBite Logo" />
                         <span class="tw-self-center tw-text-2xl tw-font-semibold tw-whitespace-nowrap dark:tw-text-white">Plugin Relay</span>
                     </a>

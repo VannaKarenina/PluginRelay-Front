@@ -24,23 +24,18 @@ export default defineComponent({
       })
 
       try {
-        if (payload.code == 401) {
-          this.$refs.err.error = 'Authorization failed';
+        if (payload.code == 801) {
+          this.$refs.err.error = payload.message;
           this.$refs.err.close();
         } else {
-          if (payload.code == 808) {
-            this.$refs.err.error = payload.message;
-            this.$refs.err.close();
-          } else {
-            if (payload.code != 800) {
-              this.store.login(payload.access_token);
-              if (this.route.path != '/user/dashboard') {
-                this.$emit('redirect')
-                return navigateTo('/user/dashboard')
-              }
-            } else {
-              this.$emit('verify', this.loginPayload.loginOrEmail)
+          if (payload.code != 800) {
+            this.store.login(payload.access_token);
+            if (this.route.path != '/user/dashboard') {
+              this.$emit('redirect')
+              return navigateTo('/user/dashboard')
             }
+          } else {
+            this.$emit('verify', this.loginPayload.loginOrEmail)
           }
         }
       } catch (e) {

@@ -177,8 +177,8 @@ async function closeVersionEditor() {
     <Modal v-if="cardModal" @close="toggleCardModal">
       <div class="tw-w-550">
         <div class="tw-flex tw-flex-col tw-w-550 tw-items-center tw-bg-white tw-border tw-border-gray-200 tw-rounded-md tw-shadow md:tw-flex-row dark:tw-border-gray-700 dark:tw-bg-gray-700">
-          <img v-if="!currentProject.favicon_path" class="tw-m-2 tw-rounded-lg tw-w-222" :src="`http://localhost:3890/v1/storage/getProjectAvatar?key=default.png`" />
-          <img v-else class="tw-m-2 tw-rounded-lg tw-w-222" :src="`http://localhost:3890/v1/storage/getProjectAvatar?key=` + currentProject.favicon_path" />
+          <img v-if="!currentProject.favicon_path" class="tw-m-2 tw-rounded-lg tw-w-222" :src="`${config.public.baseUrl}/v1/storage/getProjectAvatar?key=default.png`" />
+          <img v-else class="tw-m-2 tw-rounded-lg tw-w-222" :src="`${config.public.baseUrl}/v1/storage/getProjectAvatar?key=` + currentProject.favicon_path" />
           <div class="tw-flex tw-m-2 tw-flex-col tw-justify-center tw-leading-normal">
             <div class="tw-flex tw-flex-row">
               <h5 class="tw-text-xl tw-font-bold tw-tracking-tight tw-text-gray-900 dark:tw-text-white">{{currentProject.name}}</h5>

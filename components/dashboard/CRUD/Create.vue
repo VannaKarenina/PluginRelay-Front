@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ErrorModal from "~/components/InfoModals/ErrorModal.vue";
-
+const config = useRuntimeConfig();
 let user;
 const success = ref(null);
 const error = ref(null);
@@ -9,10 +9,10 @@ import {$fetch} from "ofetch";
 import SuccessModal from "~/components/InfoModals/SuccessModal.vue";
 
 const emit = defineEmits(['updated','created'])
-const categories = await $fetch('http://127.0.0.1:3890/v1/category/all');
+const categories = await $fetch(`${config.public.baseUrl}/v1/category/all`);
 
 try {
-  user = await $fetch('http://127.0.0.1:3890/v1/account/identity', {
+  user = await $fetch(`${config.public.baseUrl}/v1/account/identity`, {
     headers: {
       Authorization: `Bearer ${store.token}`,
     }
@@ -57,7 +57,6 @@ async function imageref(e) {
   }
   preview.value = true;
 }
-const config = useRuntimeConfig();
 async function create() {
   let favicon;
   const project = await $fetch(`${config.public.baseUrl}/v1/project/create`, {
