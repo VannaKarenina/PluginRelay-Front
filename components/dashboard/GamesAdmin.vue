@@ -3,9 +3,12 @@
 import CategoryCreation from "~/components/dashboard/CRUD/CategoryCreation.vue";
 import Modal from "~/components/base/Modal.vue";
 import DevCard from "~/components/dashboard/DevCard.vue";
-
+import DeleteGameModal from "~/components/dashboard/CRUD/DeleteGameModal.vue";
+const store = useAuthStore();
 const creation = ref(false);
 const config = useRuntimeConfig();
+const gameDeletion = ref(false);
+const deletionId = ref(0);
 
 const {data: categories, refresh: refr} = useAsyncData(
     'categories',
@@ -16,17 +19,39 @@ function toggleCreationModal() {
   creation.value = !creation.value
 }
 
+function toggleGameDeletion(e?: number) {
+  if (e) {
+    deletionId.value = e;
+  }
+  gameDeletion.value = !gameDeletion.value
+}
+
 async function refreshGamesBridge() {
   await refr();
 }
 
-async function refreshCategories() {
+async function refreshCategories(only: number) {
+  if (only == 1) {
+    toggleCreationModal();
+  }
+  if (only == 2) {
+    toggleGameDeletion()
+  }
   await refreshGamesBridge();
-  toggleCreationModal();
 }
 
 async function createdCategory() {
-  await refreshCategories();
+  await refreshCategories(1);
+}
+
+async function deleteGm() {
+  const deletion = await $fetch(`${config.public.baseUrl}/v1/category/delete/${deletionId.value}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${store.token}`
+    }
+  })
+  await refreshCategories(2);
 }
 </script>
 <template>
@@ -38,13 +63,16 @@ async function createdCategory() {
       <div class="tw-flex-col">
         <div class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-3 md:tw-grid-cols-5 lg:tw-grid-cols-5 tw-gap-4 tw-mt-5">
           <div v-for="(category, index) in categories" :key="index">
-            <DevCard :project="category" @rmgame="refreshGamesBridge" />
+            <DevCard :project="category" @rmgame="refreshGamesBridge" @deleteGame="toggleGameDeletion" />
           </div>
         </div>
       </div>
     </div>
     <Modal v-if="creation" @close="toggleCreationModal">
       <CategoryCreation @cd="createdCategory"/>
+    </Modal>
+    <Modal v-if="gameDeletion" @close="toggleGameDeletion">
+      <DeleteGameModal @deleted="deleteGm" @cancel="toggleGameDeletion"/>
     </Modal>
   </div>
 </template>

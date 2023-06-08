@@ -71,22 +71,8 @@ export default {
       this.gameDeletion = !this.gameDeletion
     },
     deleteGame(id) {
-      this.deleteid = id;
-      this.toggleGameDeletion();
+      this.$emit('deleteGame', id)
     },
-    async delete() {
-      console.log(this.deleteid)
-      const deletion = await $fetch(`${this.config.public.baseUrl}/v1/category/delete/${this.deleteid}`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${this.store.token}`
-        }
-      })
-
-      if (deletion.code === 801) {
-        this.$emit('rmgame');
-      }
-    }
   }
 }
 </script>

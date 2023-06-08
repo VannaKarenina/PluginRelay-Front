@@ -4,7 +4,7 @@ import {defineNuxtConfig} from "nuxt/config";
 export default defineNuxtConfig({
     runtimeConfig: {
       public: {
-          baseUrl: 'http://mmh-gateway-1:3890'
+          baseUrl: 'http://127.0.0.1:3890'
       }
     },
     css: [
