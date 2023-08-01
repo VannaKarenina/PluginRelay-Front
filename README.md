@@ -1,42 +1,22 @@
-# Nuxt 3 Minimal Starter
+<h1 align="center">
+  <br>PluginRelay Front<br>
+</h1>
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+<p align="center">
+  <b>Frontend для платформы, предназначенной для обмена, хранения и публикации игровых модификаций (модов) для различных компьютерных игр</b><br><br>
+</p>
 
-## Setup
+<h3 align="center">
+  Created with
+</h3>
 
-Make sure to install the dependencies:
+<p align="center">
+  <a href="https://skillicons.dev">
+    <img src="https://skillicons.dev/icons?i=ts,nuxtjs,vuejs,git,docker" />
+  </a>
+</p>
 
-```bash
-# yarn
-yarn install
+## Features
 
-# npm
-npm install
-
-# pnpm
-pnpm install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`
-
-```bash
-npm run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-npm run build
-```
-
-Locally preview production build:
-
-```bash
-npm run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+- SERVER SIDE RENDERING
+- PINIA STORAGE
